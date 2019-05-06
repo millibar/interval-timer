@@ -43,7 +43,7 @@
           "type": "image/png"
         }
     ],
-    "start_url": "./",
+    "start_url": "https://millibar.github.io/interval-timer/",
     "display": "standalone",
     "orientation": "portrait",
     "description": "Timer for HIIT",
