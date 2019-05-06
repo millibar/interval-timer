@@ -43,10 +43,10 @@
           "type": "image/png"
         }
     ],
-    "start_url": "/",
+    "start_url": "./",
     "display": "standalone",
     "orientation": "portrait",
-    "description": "Timer for HIIT etc.",
+    "description": "Timer for HIIT",
     "background_color": "#ffffff",
     "theme_color": "#cee7ff"
 }
