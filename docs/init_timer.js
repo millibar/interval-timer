@@ -12,7 +12,7 @@ const init = () => {
     const buttons = document.getElementById('buttons')
 
     const resize = () => {
-        const unitHeight = body.clientHeight * devicePixelRatio
+        const unitHeight = body.clientHeight// * devicePixelRatio
             
         html.style.fontSize = `${unitHeight / 36}px`
 

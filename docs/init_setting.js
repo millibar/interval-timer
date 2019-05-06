@@ -9,7 +9,7 @@ const init = () => {
     const toTimer = document.getElementById('to-timer')
 
     const resize = () => {
-        const unitHeight = body.clientHeight * devicePixelRatio
+        const unitHeight = body.clientHeight// * devicePixelRatio
             
         html.style.fontSize = `${unitHeight / 36}px`
 
