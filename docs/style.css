@@ -321,6 +321,13 @@ button {
     transition-duration: 1s;
 }
 
+#butInstall {
+    border: none;
+    background: inherit;
+    box-shadow: none;
+    transition: none;
+}
+
 button:hover {
     background-image: linear-gradient(to bottom, #ffffff, 60%, #eff5ff);
 }
