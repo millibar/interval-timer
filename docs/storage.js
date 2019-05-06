@@ -12,7 +12,7 @@ class Storage {
         if (this.data[key] !== undefined) {
             return this.data[key]
         } else {
-            return null
+            return undefined
         }
     }
     

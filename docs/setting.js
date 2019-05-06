@@ -19,8 +19,16 @@ const main = () => {
         let activityTime = Number(storage.getItem('activityTime')) || 20
         let intervalTime = Number(storage.getItem('intervalTime')) || 10
         let setNumber = Number(storage.getItem('setNumber')) || 8
-        let hasLastInterval = storage.getItem('hasLastInterval') || true
-        let useSound = storage.getItem('useSound') || true
+
+        let hasLastInterval = storage.getItem('hasLastInterval')
+        if (hasLastInterval === undefined) {
+            hasLastInterval = true
+        }
+        
+        let useSound = storage.getItem('useSound')
+        if (useSound === undefined) {
+            useSound = true
+        }
 
         activity.value = activityTime
         interval.value = intervalTime

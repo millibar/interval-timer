@@ -484,11 +484,19 @@ const main = () => {
     // ローカルストレージからパラメータを読み込む
     const storage = new Storage ('intervalTimer')
     const readyTime = 5
-    const activityTime = Number(storage.getItem('activityTime') || 20)
-    const intervalTime = Number(storage.getItem('intervalTime') || 10)
-    const setNumber = Number(storage.getItem('setNumber') || 8)
-    const hasLastInterval = storage.getItem('hasLastInterval') || true
-    const useSound = storage.getItem('useSound') || true
+    let activityTime = Number(storage.getItem('activityTime')) || 20
+    let intervalTime = Number(storage.getItem('intervalTime')) || 10
+    let setNumber = Number(storage.getItem('setNumber')) || 8
+
+    let hasLastInterval = storage.getItem('hasLastInterval')
+    if (hasLastInterval === undefined) {
+        hasLastInterval = true
+    }
+        
+    let useSound = storage.getItem('useSound')
+    if (useSound === undefined) {
+        useSound = true
+    }
 
     // 総時間を計算する。readyTimeは含めない
     let totalTime = activityTime * setNumber + intervalTime * (setNumber - 1)
@@ -642,6 +650,9 @@ const main = () => {
     pauseBtn.addEventListener('click', pause, false)
     resetBtn.addEventListener('click', reset, false)
 
+    startBtn.addEventListener('touchstart', start, false)
+    pauseBtn.addEventListener('touchstart', pause, false)
+    resetBtn.addEventListener('touchstart', reset, false)
 
 
 
