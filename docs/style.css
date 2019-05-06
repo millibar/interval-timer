@@ -7,6 +7,7 @@
     color: #000;
     font-family: -apple-system, 'Open Sans', Meiryo, sans-serif;
     background: #fff;
+    position: fixed;
 }
 
 body {
@@ -65,6 +66,7 @@ h1 {
     padding: 0;
     list-style: none;
     position: absolute;
+    z-index: 2;
     right: 10px;
 }
 
@@ -84,6 +86,7 @@ h1 {
     padding: 0;
     list-style: none;
     position: absolute;
+    z-index: 2;
     top: 0;
     left: 5px;
     font-size: 0.85rem;
@@ -162,14 +165,11 @@ h1 {
 }
 
 canvas {
-    /* background: yellow; */
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    display: block;
     margin: auto;
+    width: 50vh;
+    height: 50vh;
+    /* outline: 1px solid blue;*/
 }
 
 #count-down {

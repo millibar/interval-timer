@@ -449,7 +449,7 @@ const main = () => {
     const indicator = document.getElementById('indicator')
     const countDownArea = document.getElementById('count-down')
     const canvas = document.createElement('canvas')
-
+    
     // #setting-info内のdt, dd
     const dtAtcivity = document.getElementById('activity-label')
     const dtInterval = document.getElementById('interval-label')
@@ -474,7 +474,6 @@ const main = () => {
     window.addEventListener('resize', resizeCanvas, false)
 
     indicator.appendChild(canvas)
-
 
     // 色を決める
     const readyColor = '#c8c8c8'
@@ -650,9 +649,6 @@ const main = () => {
     pauseBtn.addEventListener('click', pause, false)
     resetBtn.addEventListener('click', reset, false)
 
-    startBtn.addEventListener('touchstart', start, false)
-    pauseBtn.addEventListener('touchstart', pause, false)
-    resetBtn.addEventListener('touchstart', reset, false)
 
 
 
