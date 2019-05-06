@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interval Timer</title>
+    <link rel="stylesheet" href="./style.css" type="text/css" media="all">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"> 
+    <link rel="manifest" href="./manifest.json">
+    <!-- iOS用 manifestの代替-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Interval Timer PWA">
+    <link rel="apple-touch-icon" href="/img/icon-152x152.png">
+
+    <meta name="description" content="Interval Timer app counts down two timers, activity and interval, alternately.">
+    <meta name="theme-color" content="#cee7ff">
+
+
+
+    <script type="text/javascript" src="./init_timer.js"></script>
+    <script type="text/javascript" src="./function.js"></script>
+    <script type="text/javascript" src="./storage.js"></script>
+    <script type="text/javascript" src="./timer.js"></script>
+</head>
+<body>
+<h1>Interval Timer</h1>
+
+<ul id="to-setting"><li><a href="./setting.html" id="setting-btn"><img src="./img/setting@3x.png" alt="Setting"></a></li></ul>
+
+<dl id="setting-info">
+    <dt id="total-label">Total</dt><dd id="total-time">4:00</dd>
+    <dt id="set-label">Set</dt><dd id="set-count">0/8</dd>
+    <dt id="activity-label">Activity</dt><dd id="activity-time">0:20</dd>
+    <dt id="interval-label">Interval</dt><dd id="interval-time">0:10</dd>
+</dl>
+
+<div id="indicator">
+    <!-- ここにcanvasを生成する-->
+    <p id="count-down"><span id="ready"></span><span id="activity" class="invisible"></span><span id="interval"></span></p>
+</div>
+
+<div id="buttons">
+    <button id="start-btn">Start</button>
+    <button id="pause-btn">Pause</button>
+    <button id="reset-btn">Reset</button>
+</div>
+
+<button id="butInstall" aria-label="Install" hidden></button>
+
+<!-- PWAのインストール用 -->
+<script src="./install.js"></script>
+
+<!-- service workerを登録する -->
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./service-worker.js')
+          .then((reg) => {
+            console.log('Service worker registered.', reg);
+          });
+    });
+  }
+</script>
+
+</body>
+</html>

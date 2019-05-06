@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setting ― Interval Timer</title>
+    <link rel="stylesheet" href="./style.css" type="text/css" media="all">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <script type="text/javascript" src="./init_setting.js"></script>
+    <script type="text/javascript" src="./function.js"></script>
+    <script type="text/javascript" src="./storage.js"></script>
+    <script type="text/javascript" src="./setting.js"></script>
+    
+</head>
+<body id="setting">
+<h1>Setting</h1>
+
+<ul id="to-timer"><li><a href="./index.html">＜ Interval Timer</a></li></ul>
+
+<dl id="user-setting">
+    <dt>Total</dt>
+    <dd id="setting-total-label">00:00</dd>
+
+    <dt>Activity</dt>
+    <dd id="setting-activity-label">00:00</dd>
+    <dd><input type="range" id="setting-activity" min="1" max="180" step="1" value="20"></dd>
+
+    <dt>Interval</dt>
+    <dd id="setting-interval-label">0:00</dd>
+    <dd><input type="range" id="setting-interval" min="0" max="180" step="1" value="10"></dd>
+
+    <dt>Set</dt>
+    <dd id="setting-set-label">8</dd>
+    <dd><input type="range" id="setting-set" min="1" max="20" step="1" value="8"></dd>
+
+    <dt><label for="setting-has-last-interval">Include Interval in Final Set</label></dt>
+    <dd><input type="checkbox" id="setting-has-last-interval" value="hasLastInterval" checked></dd>
+
+    <dt><label for="setting-sound">Sound</label></dt>
+    <dd><input type="checkbox" id="setting-sound" value="useSound" checked></dd>
+</dl>
+
+
+
+
+</body>
+</html>

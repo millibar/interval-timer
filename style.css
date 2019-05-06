@@ -1,0 +1,554 @@
+﻿html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 20px;/* Javascritでbody.heightの1/36に変更される */
+    color: #000;
+    font-family: -apple-system, 'Open Sans', Meiryo, sans-serif;
+    background: #fff;
+}
+
+body {
+    margin: 0 auto;
+    padding: 0;
+    height: 100%; /* widthはJavaScriptでheightの9/16にセットする */
+    min-height: 500px;
+    position: relative;
+    background: #fff;
+}
+
+h1 {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: normal;
+    background-image: linear-gradient(to bottom, #edeff1, 75%, #fefefe);
+    box-shadow: 0 1px 3px 0px #ccc;
+}
+
+#to-setting {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: absolute;
+    right: 10px; /* top, width, heightはJavaScriptから求める */
+}
+
+#to-setting img {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0px 1px 1px #aaa);
+}
+
+#to-setting a:active {
+    position: relative;
+    top: 1px;
+}
+
+#to-timer {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: absolute;
+    top: 0;
+    left: 5px; /* heightはJavaScriptから求める */
+    font-size: 0.85rem;
+}
+
+#to-timer a {
+    text-decoration: none;
+    color: #42a4f4;
+}
+
+#to-timer li::first-letter {
+    font-weight: bold;
+}
+
+#setting-info {
+    /*outline: 1px solid blue;*/
+    margin: 0;
+    padding: 0.8rem 8px 0;
+    font-size: 1.1rem;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 4.5rem 4rem 1fr 4.5rem 4rem;
+    grid-template-areas:
+        "label11 value11 . label12 value12"
+        "label21 value21 . label22 value22";
+}
+
+#setting-info dt,
+#setting-info dd {
+    /*outline: 1px solid gray;*/
+    margin: 0;
+    padding: 0;
+}
+
+#total-label {
+    grid-area: label11;
+}
+
+#total-time {
+    grid-area: value11;
+}
+
+#set-label {
+    grid-area: label12;
+    text-align: right;
+}
+
+#set-count {
+    grid-area: value12;
+    text-align: right;
+}
+
+#activity-label {
+    grid-area: label21;
+}
+
+#activity-time {
+    grid-area: value21;
+}
+
+#interval-label {
+    grid-area: label22;
+    text-align: right;
+}
+
+#interval-time {
+    grid-area: value22;
+    text-align: right;
+}
+
+#indicator {
+    position: relative;
+    width: 100%;
+    /*outline: 1px solid red;*/
+}
+
+canvas {
+    /* background: yellow; */
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+#count-down {
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 11rem;
+    height: 3.5rem;
+    line-height: 1;
+    font-size: 3.5rem;
+    text-align: center;
+    transform-style: preserve-3d;
+    transition-duration: 0.4s;
+    transition-timing-function: ease;
+}
+
+#ready, #activity, #interval {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    background:#fff;
+}
+
+/*
+#ready {
+    
+}
+
+#activity {
+    
+}
+*/
+
+#interval { /* #activityの裏側にする */
+    transform: rotateX(180deg);
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.flip { /* activityとintervalの切り替わりのタイミングで#count-down要素にtoggleされる */
+    transform: rotateX(180deg);
+}
+
+.set-up { /* セット数が増加するタイミングで#set-count要素にtoggleされる */
+    transform: rotateX(360deg);
+}
+
+#set-count {
+    transition-property: transform;
+    transition-duration: 0.3s;
+}
+
+.ready-count { /* readyTimerの更新ごとに#ready要素にaddされる */
+    transform: scale3d(1.8, 1.8, 1.8);
+}
+
+
+/* 完了時に#ready要素に追加される 
+https://daneden.github.io/animate.css/
+*/
+@-webkit-keyframes rubberBand {
+    from {
+      -webkit-transform: scale3d(1, 1, 1);
+      transform: scale3d(1, 1, 1);
+    }
+  
+    30% {
+      -webkit-transform: scale3d(1.25, 0.75, 1);
+      transform: scale3d(1.25, 0.75, 1);
+    }
+  
+    40% {
+      -webkit-transform: scale3d(0.75, 1.25, 1);
+      transform: scale3d(0.75, 1.25, 1);
+    }
+  
+    50% {
+      -webkit-transform: scale3d(1.15, 0.85, 1);
+      transform: scale3d(1.15, 0.85, 1);
+    }
+  
+    65% {
+      -webkit-transform: scale3d(0.95, 1.05, 1);
+      transform: scale3d(0.95, 1.05, 1);
+    }
+  
+    75% {
+      -webkit-transform: scale3d(1.05, 0.95, 1);
+      transform: scale3d(1.05, 0.95, 1);
+    }
+  
+    to {
+      -webkit-transform: scale3d(1, 1, 1);
+      transform: scale3d(1, 1, 1);
+    }
+}
+  
+@keyframes rubberBand {
+  from {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+
+  30% {
+    -webkit-transform: scale3d(1.25, 0.75, 1);
+    transform: scale3d(1.25, 0.75, 1);
+  }
+
+  40% {
+    -webkit-transform: scale3d(0.75, 1.25, 1);
+    transform: scale3d(0.75, 1.25, 1);
+  }
+
+  50% {
+    -webkit-transform: scale3d(1.15, 0.85, 1);
+    transform: scale3d(1.15, 0.85, 1);
+  }
+
+  65% {
+    -webkit-transform: scale3d(0.95, 1.05, 1);
+    transform: scale3d(0.95, 1.05, 1);
+  }
+
+  75% {
+    -webkit-transform: scale3d(1.05, 0.95, 1);
+    transform: scale3d(1.05, 0.95, 1);
+  }
+
+  to {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+
+.rubberBand {
+    -webkit-animation-name: rubberBand;
+    animation-name: rubberBand;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+
+
+  
+  
+ 
+
+
+
+
+#buttons {
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+button {
+    border-radius: 50%;
+    border: 1px solid #adcbfa;
+    color: #007AFF;
+    background-image: linear-gradient(to bottom, #fefefe, 30%, #eff5ff);
+    box-shadow: 0 1px 2px 1px #eee;
+    transition-property: box-shadow, background-image;
+    transition-duration: 1s;
+}
+
+button:hover {
+    background-image: linear-gradient(to bottom, #ffffff, 60%, #eff5ff);
+}
+
+button:active {
+    box-shadow: 0 1px 0px 0px #eee;
+    background-image: linear-gradient(to bottom, #ffffff, 80%, #eff5ff);
+    transform: translate3d(0px, 1px, 1px);
+    outline: none;
+}
+
+button.disabled {
+    background-image: linear-gradient(to bottom, #ffffff, 30%, #fcfcfc);
+}
+
+#start-btn {
+    order: 2;
+    width: 40%;
+    height: 80%;
+    font-size: 1.5rem;
+}
+
+#pause-btn {
+    order: 3;
+    width: 25%;
+    height: 50%;
+    font-size: 1rem;
+}
+
+#reset-btn {
+    order: 1;
+    width: 25%;
+    height: 50%;
+    font-size: 1rem;
+}
+
+.disabled {
+    border-color: #d8d8d8;
+    color: #c8c8c8;
+}
+
+
+body#setting {
+    background: #efefef;
+    animation-name: appear;
+    animation-duration: 0.3s;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+    animation-timing-function: ease-out;
+}
+
+@keyframes appear {
+    0% {
+        transform: translateX(70%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+#user-setting {
+    margin: 1rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 5rem;
+    grid-template-areas:
+        "total    tVal"
+        "activity aVal"
+        "aRange   aRange"
+        "interval iVal"
+        "iRange   iRange"
+        "set      sVal"
+        "sRange   sRange"
+        "include  iCheck"
+        "sound    sCheck";
+    
+}
+
+#user-setting dt,
+#user-setting dd {
+    margin: 0;
+    padding: 1px 10px 0;
+    line-height: 2;
+    /*outline: 1px solid gray;*/
+    background: #fff;
+}
+
+#user-setting :nth-child(1) {
+    grid-area: total;
+    background: transparent;
+}
+
+#user-setting :nth-child(2) {
+    grid-area: tVal;
+    text-align: right;
+    background: transparent;
+}
+
+#user-setting :nth-child(3) {
+    grid-area: activity ;
+}
+
+#user-setting :nth-child(4) {
+    grid-area: aVal;
+    text-align: right;
+}
+
+#user-setting :nth-child(5) {
+    grid-area: aRange;
+}
+
+#user-setting :nth-child(6) {
+    grid-area: interval;
+    border-top: 1px solid #ddd;
+}
+
+#user-setting :nth-child(7) {
+    grid-area: iVal;
+    border-top: 1px solid #ddd;
+    text-align: right;
+}
+
+#user-setting :nth-child(8) {
+    grid-area: iRange;
+}
+
+#user-setting :nth-child(9) {
+    grid-area: set;
+    border-top: 1px solid #ddd;
+}
+
+#user-setting :nth-child(10) {
+    grid-area: sVal;
+    border-top: 1px solid #ddd;
+    text-align: right;
+}
+
+#user-setting :nth-child(11) {
+    grid-area: sRange;
+}
+
+#user-setting :nth-child(12) {
+    grid-area: include;
+    margin: 2rem 0 0;
+}
+
+#user-setting :nth-child(13) {
+    grid-area: iCheck;
+    position: relative;
+    margin: 2rem 0 0;
+}
+
+#user-setting :nth-child(14) {
+    grid-area: sound;
+    border-top: 1px solid #ddd;
+}
+
+#user-setting :nth-child(15) {
+    grid-area: sCheck;
+    border-top: 1px solid #ddd;
+    position: relative;
+}
+
+
+#setting-activity,
+#setting-interval,
+#setting-set {
+    width: 100%;
+
+}
+
+label {
+    display: block;
+}
+
+input[type="checkbox"] {
+    width: 100%;
+    
+}
+
+input[type="checkbox"]::before {
+    content: "";
+    display: block;
+    width: 2.5rem;
+    height: 1.5rem;
+    background: #ffffff;
+    border-radius: 0.8rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 10px;
+    margin: auto 0 auto auto;
+    z-index: 1;
+    box-shadow: 1px 1px 1px 0px #bbb inset;
+    transition-property: background-color;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+}
+
+input[type="checkbox"]::after {
+    content: "";
+    display: block;
+    width: 1.3rem;
+    height: 1.3rem;
+    border-radius: 50%;
+    background: #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 10px;
+    margin: auto 0 auto auto;
+    z-index: 10;
+    box-shadow: 1px 1px 1px 0px #bbb;
+    transition-property: transform;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+    transform: translateX(-1.1rem);
+
+}
+
+input[type="checkbox"]:checked::before {
+    background: #62ea70;
+}
+
+input[type="checkbox"]:checked::after {
+    transform: translateX(-0.1rem);
+}
+
