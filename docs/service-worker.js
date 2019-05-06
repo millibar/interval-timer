@@ -18,7 +18,7 @@
 'use strict';
 
 // CODELAB: Update cache names any time any of the cached files change.
-const CACHE_NAME = 'static-cache-v1';
+const CACHE_NAME = 'static-cache-20190506';
 
 
 
@@ -29,8 +29,6 @@ const FILES_TO_CACHE = [
     './setting.html',
     './install.js',
     './function.js',
-    './init_timer.js',
-    './init_setting.js',
     './setting.js',
     './timer.js',
     './storage.js',

@@ -3,7 +3,7 @@
     padding: 0;
     width: 100%;
     height: 100%;
-    font-size: 20px;/* Javascritでbody.heightの1/36に変更される */
+    font-size: 2.7vh;
     color: #000;
     font-family: -apple-system, 'Open Sans', Meiryo, sans-serif;
     background: #fff;
@@ -12,11 +12,43 @@
 body {
     margin: 0 auto;
     padding: 0;
-    height: 100%; /* widthはJavaScriptでheightの9/16にセットする */
+    height: 100%;
+    max-width: 700px;
     min-height: 500px;
     position: relative;
     background: #fff;
 }
+
+h1 {
+    height: 8vh;
+    line-height: 8vh;
+}
+
+#to-setting {
+    height: 4vh;
+    width: 4vh;
+    top: 2vh;
+}
+
+#to-timer {
+    height: 4vh;
+    line-height: 8vh;
+}
+
+#setting-info {
+    height: 12vh;
+}
+
+#indicator {
+    height: 50vh;
+}
+
+#buttons {
+    height: 30vh;
+    width: 30vh;
+}
+
+
 
 h1 {
     margin: 0;
@@ -33,7 +65,7 @@ h1 {
     padding: 0;
     list-style: none;
     position: absolute;
-    right: 10px; /* top, width, heightはJavaScriptから求める */
+    right: 10px;
 }
 
 #to-setting img {
@@ -53,7 +85,7 @@ h1 {
     list-style: none;
     position: absolute;
     top: 0;
-    left: 5px; /* heightはJavaScriptから求める */
+    left: 5px;
     font-size: 0.85rem;
 }
 
@@ -126,7 +158,7 @@ h1 {
 #indicator {
     position: relative;
     width: 100%;
-    /*outline: 1px solid red;*/
+    /*outline: 1px solid orange;*/
 }
 
 canvas {
@@ -292,14 +324,6 @@ https://daneden.github.io/animate.css/
     animation-fill-mode: both;
 }
 
-
-  
-  
- 
-
-
-
-
 #buttons {
     margin: 0;
     padding: 0;
@@ -307,8 +331,9 @@ https://daneden.github.io/animate.css/
     bottom: 0;
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
+    /*outline: 1px solid red;*/
 }
 
 button {
@@ -345,22 +370,24 @@ button.disabled {
 
 #start-btn {
     order: 2;
-    width: 40%;
-    height: 80%;
+    width: 28vmin;
+    height: 28vmin;
     font-size: 1.5rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
 }
 
 #pause-btn {
     order: 3;
-    width: 25%;
-    height: 50%;
+    width: 20vmin;
+    height: 20vmin;
     font-size: 1rem;
 }
 
 #reset-btn {
     order: 1;
-    width: 25%;
-    height: 50%;
+    width: 20vmin;
+    height: 20vmin;
     font-size: 1rem;
 }
 
@@ -505,8 +532,15 @@ label {
 }
 
 input[type="checkbox"] {
-    width: 100%;
-    
+    /* チェックボックスを擬似要素に重ねて隠す。微妙な位置決めが必要 */
+    width: 3rem;
+    height: 60%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    z-index: 0; 
 }
 
 input[type="checkbox"]::before {
