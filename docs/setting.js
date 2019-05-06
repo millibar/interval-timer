@@ -16,11 +16,11 @@ const main = () => {
 
     // ローカルストレージの値を読み込む
     const readStorage = (storage) => {
-        let activityTime = storage.getItem('activityTime')
-        let intervalTime = storage.getItem('intervalTime')
-        let setNumber = storage.getItem('setNumber')
-        let hasLastInterval = storage.getItem('hasLastInterval')
-        let useSound = storage.getItem('useSound')
+        let activityTime = Number(storage.getItem('activityTime')) || 20
+        let intervalTime = Number(storage.getItem('intervalTime')) || 10
+        let setNumber = Number(storage.getItem('setNumber')) || 8
+        let hasLastInterval = storage.getItem('hasLastInterval') || true
+        let useSound = storage.getItem('useSound') || true
 
         activity.value = activityTime
         interval.value = intervalTime
