@@ -368,11 +368,13 @@ button.disabled {
     background-image: linear-gradient(to bottom, #ffffff, 30%, #fcfcfc);
 }
 
+
+
 #start-btn {
     order: 2;
     width: 28vmin;
     height: 28vmin;
-    font-size: 1.5rem;
+    font-size: 6vmin;
     margin-right: 1rem;
     margin-left: 1rem;
 }
@@ -381,14 +383,14 @@ button.disabled {
     order: 3;
     width: 20vmin;
     height: 20vmin;
-    font-size: 1rem;
+    font-size: 3.5vmin;
 }
 
 #reset-btn {
     order: 1;
     width: 20vmin;
     height: 20vmin;
-    font-size: 1rem;
+    font-size: 3.5vmin;
 }
 
 .disabled {
