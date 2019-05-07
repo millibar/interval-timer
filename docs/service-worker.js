@@ -18,7 +18,7 @@
 'use strict';
 
 // CODELAB: Update cache names any time any of the cached files change.
-const CACHE_NAME = 'static-cache-201905062213';
+const CACHE_NAME = 'static-cache-201905072106';
 
 
 
@@ -36,7 +36,8 @@ const FILES_TO_CACHE = [
     './sound/count-down.mp3',
     './sound/count-up.mp3',
     './sound/finish.mp3',
-    './img/setting@3x.png'
+    './img/setting@3x.png',
+    'https://fonts.googleapis.com/css?family=Open+Sans'
 ];
 
 self.addEventListener('install', (evt) => {

@@ -437,94 +437,124 @@ body#setting {
 #user-setting dt,
 #user-setting dd {
     margin: 0;
-    padding: 1px 10px 0;
-    line-height: 2;
-    /*outline: 1px solid gray;*/
+    padding: 1px 0.5rem 0;
+    line-height: 2.5rem;
     background: #fff;
+    /*outline: 1px solid gray;*/
 }
 
-#user-setting :nth-child(1) {
+#user-setting >:nth-child(1) {
     grid-area: total;
     background: transparent;
 }
 
-#user-setting :nth-child(2) {
+#user-setting >:nth-child(2) {
     grid-area: tVal;
     text-align: right;
     background: transparent;
 }
 
-#user-setting :nth-child(3) {
+#user-setting >:nth-child(3) {
     grid-area: activity ;
+    line-height: 1.5rem;
+    padding: 0.8rem 0.5rem 0;
 }
 
-#user-setting :nth-child(4) {
+#user-setting >:nth-child(4) {
     grid-area: aVal;
     text-align: right;
+    line-height: 1.5rem;
+    padding: 0.8rem 0.5rem 0;
 }
 
-#user-setting :nth-child(5) {
+#user-setting >:nth-child(5) {
     grid-area: aRange;
+    line-height: 1rem;
+    text-align: left;
 }
 
-#user-setting :nth-child(6) {
+#user-setting >:nth-child(5) label,
+#user-setting >:nth-child(8) label,
+#user-setting >:nth-child(11) label {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    color: #999;
+}
+
+#user-setting >:nth-child(6) {
     grid-area: interval;
     border-top: 1px solid #ddd;
+    line-height: 1.5rem;
+    padding: 0.8rem 0.5rem 0;
 }
 
-#user-setting :nth-child(7) {
+#user-setting >:nth-child(7) {
     grid-area: iVal;
     border-top: 1px solid #ddd;
     text-align: right;
+    line-height: 1.5rem;
+    padding: 0.8rem 0.5rem 0;
 }
 
-#user-setting :nth-child(8) {
+#user-setting >:nth-child(8) {
     grid-area: iRange;
+    line-height: 1rem;
+    text-align: left;
 }
 
-#user-setting :nth-child(9) {
+#user-setting >:nth-child(9) {
     grid-area: set;
     border-top: 1px solid #ddd;
+    line-height: 1.5rem;
+    padding: 0.8rem 0.5rem 0;
 }
 
-#user-setting :nth-child(10) {
+#user-setting >:nth-child(10) {
     grid-area: sVal;
     border-top: 1px solid #ddd;
     text-align: right;
+    line-height: 1.5rem;
+    padding: 0.8rem 0.5rem 0;
 }
 
-#user-setting :nth-child(11) {
+#user-setting >:nth-child(11) {
     grid-area: sRange;
+    line-height: 1rem;
+    text-align: left;
 }
 
-#user-setting :nth-child(12) {
+#user-setting >:nth-child(12) {
     grid-area: include;
     margin: 2rem 0 0;
 }
 
-#user-setting :nth-child(13) {
+#user-setting >:nth-child(13) {
     grid-area: iCheck;
     position: relative;
     margin: 2rem 0 0;
 }
 
-#user-setting :nth-child(14) {
+#user-setting >:nth-child(14) {
     grid-area: sound;
     border-top: 1px solid #ddd;
 }
 
-#user-setting :nth-child(15) {
+#user-setting >:nth-child(15) {
     grid-area: sCheck;
     border-top: 1px solid #ddd;
     position: relative;
 }
 
-
-#setting-activity,
-#setting-interval,
+#setting-activity-min,
+#setting-activity-sec,
+#setting-interval-min,
+#setting-interval-sec,
 #setting-set {
-    width: 100%;
-
+    width: calc(100% - 2.5rem);
+    margin: 0;
+    padding: 0.5rem 0;
+    
 }
 
 label {
@@ -534,7 +564,8 @@ label {
 input[type="checkbox"] {
     /* チェックボックスを擬似要素に重ねて隠す。微妙な位置決めが必要 */
     width: 3rem;
-    height: 60%;
+    height: 1rem;
+    line-height: 1rem;
     position: absolute;
     top: 0;
     bottom: 0;
@@ -546,15 +577,15 @@ input[type="checkbox"] {
 input[type="checkbox"]::before {
     content: "";
     display: block;
-    width: 2.5rem;
-    height: 1.5rem;
+    width: 2.8rem;
+    height: 1.7rem;
     background: #ffffff;
     border-radius: 0.8rem;
     position: absolute;
     top: 0;
     left: 0;
     bottom: 0;
-    right: 10px;
+    right: 0.5rem;
     margin: auto 0 auto auto;
     z-index: 1;
     box-shadow: 1px 1px 1px 0px #bbb inset;
@@ -566,15 +597,15 @@ input[type="checkbox"]::before {
 input[type="checkbox"]::after {
     content: "";
     display: block;
-    width: 1.3rem;
-    height: 1.3rem;
+    width: 1.5rem;
+    height: 1.5rem;
     border-radius: 50%;
     background: #fff;
     position: absolute;
     top: 0;
     left: 0;
     bottom: 0;
-    right: 10px;
+    right: 0.65rem;
     margin: auto 0 auto auto;
     z-index: 10;
     box-shadow: 1px 1px 1px 0px #bbb;
@@ -590,6 +621,6 @@ input[type="checkbox"]:checked::before {
 }
 
 input[type="checkbox"]:checked::after {
-    transform: translateX(-0.1rem);
+    transform: translateX(0.05rem);
 }
 
