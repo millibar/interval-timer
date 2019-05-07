@@ -551,8 +551,8 @@ body#setting {
 #setting-interval-min,
 #setting-interval-sec,
 #setting-set {
-    width: calc(100% - 2.5rem);
-    margin: 0;
+    width: calc(100% - 3.5rem);
+    margin: 0 0 0 1rem;
     padding: 0.5rem 0;
     
 }
