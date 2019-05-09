@@ -20,7 +20,7 @@ const main = () => {
     let activityTime = Number(storage.getItem('activityTime')) || 20
     let intervalTime = Number(storage.getItem('intervalTime')) || 10
     let setNumber = Number(storage.getItem('setNumber')) || 8
-    
+
     let hasLastInterval = storage.getItem('hasLastInterval')
     if (hasLastInterval === undefined) {
         hasLastInterval = inputLastInterval.checked
@@ -33,9 +33,9 @@ const main = () => {
 
     // input要素にローカルストレージから取り出した値をセットする
     let activity_sec = activityTime % 60
-    let activity_min = activityTime - activity_sec
+    let activity_min = (activityTime - activity_sec) / 60
     let interval_sec = intervalTime % 60
-    let interval_min = intervalTime - interval_sec
+    let interval_min = (intervalTime - interval_sec) / 60
 
     inputActivity_min.value = activity_min
     inputActivity_sec.value = activity_sec
@@ -81,7 +81,6 @@ const main = () => {
         storage.setItem('useSound', useSound)
     }
 
-    // input要素の値が変更されたら画面に反映し、storageに仮設定する
     const inputs = document.getElementsByTagName('input')
     for (let input of inputs) {
         input.addEventListener('change', update, false)

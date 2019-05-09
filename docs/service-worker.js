@@ -18,7 +18,7 @@
 'use strict';
 
 // CODELAB: Update cache names any time any of the cached files change.
-const CACHE_NAME = 'static-cache-201905072106';
+const CACHE_NAME = 'static-cache-201905100001';
 
 
 
@@ -33,9 +33,9 @@ const FILES_TO_CACHE = [
     './timer.js',
     './storage.js',
     './style.css',
-    './sound/count-down.mp3',
-    './sound/count-up.mp3',
-    './sound/finish.mp3',
+    './sound/count-down.wav',
+    './sound/count-up.wav',
+    './sound/finish.wav',
     './img/setting@3x.png',
     'https://fonts.googleapis.com/css?family=Open+Sans'
 ];

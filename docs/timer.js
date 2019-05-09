@@ -64,7 +64,7 @@ class StyleLabel {
  */
 class SoundPlayer {
     constructor () {
-        const files = ['count-down.mp3', 'count-up.mp3', 'finish.mp3']
+        const files = ['count-down.wav', 'count-up.wav', 'finish.wav']
         let audios = []
         for (let file of files) {
             let audio = new Audio()
@@ -465,8 +465,8 @@ const main = () => {
 
     const resizeCanvas = () =>{
         let maxWidth = Math.min(indicator.clientWidth, indicator.clientHeight)
-        canvas.width = maxWidth * devicePixelRatio
-        canvas.height = maxWidth * devicePixelRatio
+        canvas.width = maxWidth //* devicePixelRatio
+        canvas.height = maxWidth//* devicePixelRatio
 
     }
     resizeCanvas ()
