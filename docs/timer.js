@@ -110,7 +110,7 @@ class SoundPlayer {
             default:
                 console.log('何もしない')
         }
-        this.audioPlayer.playSound()
+        //this.audioPlayer.playSound()
     }
 }
 
@@ -124,7 +124,7 @@ class WebAudioPlayer {
         this.audioCtx.createBufferSource().start(0)
         this.source = null
     }
-        
+    /*    
     getAudioBuffer (url) {
         this.source = this.audioCtx.createBufferSource()
         let req = new XMLHttpRequest ()
@@ -144,6 +144,33 @@ class WebAudioPlayer {
         
         req.send()
     }
+    */
+
+    getAudioBuffer (url) {
+        window.AudioContext = window.AudioContext || window.webkitAudioContext
+        const context = new AudioContext()
+        console.log(`context=${context}`)
+        context.createBufferSource().start(0)
+
+        const request = new XMLHttpRequest()
+        request.open('GET', url, true)
+        request.responseType = 'arraybuffer'
+        request.onload = completeOnLoad
+        request.send()
+
+        function completeOnLoad() {
+            let source = context.createBufferSource()
+            console.log('オーディオをデコード')
+            context.decodeAudioData(request.response, function (buf) {
+                source.buffer = buf
+                source.loop = false
+                source.connect(context.destination)
+                source.start(0)
+            })
+        }
+
+    }
+
 
     playSound () {
         this.source.start()
@@ -542,7 +569,7 @@ const main = () => {
     // ローカルストレージからパラメータを読み込む
     const storage = new Storage ('intervalTimer')
     const readyTime = 5
-    let activityTime = 14 //Number(storage.getItem('activityTime')) || 20
+    let activityTime = 13 //Number(storage.getItem('activityTime')) || 20
     let intervalTime = Number(storage.getItem('intervalTime')) || 10
     let setNumber = Number(storage.getItem('setNumber')) || 8
 
@@ -626,8 +653,11 @@ const main = () => {
         intervalTimer.addSoundPlayer(soundPlayer)
         // iOSでAudio再生のアンロック
         startBtn.addEventListener('click', function() {
+            console.log('test')
             const audio = new WebAudioPlayer ()
+            audio.getAudioBuffer('sound/count-down.mp3')
             soundPlayer.asignAudioPlayer(audio)
+            
         })
     }
     
