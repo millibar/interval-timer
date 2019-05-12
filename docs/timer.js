@@ -618,6 +618,11 @@ const main = () => {
         readyTimer.addSoundPlayer(soundPlayer)
         activityTimer.addSoundPlayer(soundPlayer)
         intervalTimer.addSoundPlayer(soundPlayer)
+        // iOSでAudio再生のアンロック
+        startBtn.addEventListener('click', function(){
+            audio.getAudioBuffer('sound/count-down.mp3')
+            audio.playSound()
+        })
     }
     
 
