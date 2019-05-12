@@ -120,7 +120,8 @@ class SoundPlayer {
 class WebAudioPlayer {
     constructor () {
         window.AudioContext = window.AudioContext || window.webkitAudioContext
-        this.audioCtx = new window.AudioContext()
+        this.audioCtx = new AudioContext()
+        this.audioCtx.createBufferSource().start(0)
         this.source = null
     }
         
@@ -541,7 +542,7 @@ const main = () => {
     // ローカルストレージからパラメータを読み込む
     const storage = new Storage ('intervalTimer')
     const readyTime = 5
-    let activityTime = 15 //Number(storage.getItem('activityTime')) || 20
+    let activityTime = 14 //Number(storage.getItem('activityTime')) || 20
     let intervalTime = Number(storage.getItem('intervalTime')) || 10
     let setNumber = Number(storage.getItem('setNumber')) || 8
 
@@ -619,16 +620,14 @@ const main = () => {
     intervalTimer.addLabel(dtIntervalLabel)
     intervalTimer.addLabel(ddIntervalLabel)
     if (useSound) {
-        const audio = new WebAudioPlayer ()
         const soundPlayer = new SoundPlayer ()
-        soundPlayer.asignAudioPlayer(audio)
         readyTimer.addSoundPlayer(soundPlayer)
         activityTimer.addSoundPlayer(soundPlayer)
         intervalTimer.addSoundPlayer(soundPlayer)
         // iOSでAudio再生のアンロック
-        startBtn.addEventListener('click', function(){
-            audio.getAudioBuffer('sound/count-down.mp3')
-            audio.playSound()
+        startBtn.addEventListener('click', function() {
+            const audio = new WebAudioPlayer ()
+            soundPlayer.asignAudioPlayer(audio)
         })
     }
     
