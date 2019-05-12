@@ -64,16 +64,6 @@ class StyleLabel {
  */
 class SoundPlayer {
     constructor () {
-        /*
-        const files = ['count-down.wav', 'count-up.wav', 'finish.wav']
-        let audios = []
-        for (let file of files) {
-            let audio = new Audio()
-            audio.src = `sound/${file}`
-            audios.push(audio)
-        }
-        this.audios = audios
-        */
         this.audioPlayer = null
     }
 
@@ -83,9 +73,6 @@ class SoundPlayer {
 
     update (subtimer) {
         if (subtimer.currentTime <= 3 && subtimer.currentTime > 0) {
-            //let countDownSound = this.audios[0]
-            //countDownSound.play()
-            
             this.play(0)
         }
     }
@@ -95,22 +82,19 @@ class SoundPlayer {
      * @param {number} index 
      */
     play (index) {
-        //let sound = this.audios[index]
-        //sound.play()
         switch (index) {
             case 0:
-                this.audioPlayer.getAudioBuffer('sound/count-down.mp3')
+                this.audioPlayer.play('sound/count-down.mp3')
                 break
             case 1:
-                this.audioPlayer.getAudioBuffer('sound/count-up.mp3')
+                this.audioPlayer.play('sound/count-up.mp3')
                 break
             case 2:
-                this.audioPlayer.getAudioBuffer('sound/finish.mp3')
+                this.audioPlayer.play('sound/finish.mp3')
                 break
             default:
-                console.log('何もしない')
+                break
         }
-        //this.audioPlayer.playSound()
     }
 }
 
@@ -120,60 +104,24 @@ class SoundPlayer {
 class WebAudioPlayer {
     constructor () {
         window.AudioContext = window.AudioContext || window.webkitAudioContext
-        this.audioCtx = new AudioContext()
-        this.audioCtx.createBufferSource().start(0)
-        this.source = null
+        this.context = new AudioContext()
+        this.context.createBufferSource().start(0)
     }
-    /*    
-    getAudioBuffer (url) {
-        this.source = this.audioCtx.createBufferSource()
-        let req = new XMLHttpRequest ()
-        
-        req.open('GET', url, true)
-        
-        req.responseType = 'arraybuffer'
-        req.onload = () => {
-            
-            let audioData = req.response
-
-            this.audioCtx.decodeAudioData(audioData, buffer => {
-                this.source.buffer = buffer
-                this.source.connect(this.audioCtx.destination)
-            })
-        }
-        
-        req.send()
-    }
-    */
-
-    getAudioBuffer (url) {
-        window.AudioContext = window.AudioContext || window.webkitAudioContext
-        const context = new AudioContext()
-        console.log(`context=${context}`)
-        context.createBufferSource().start(0)
-
+    
+    play (url) {
         const request = new XMLHttpRequest()
         request.open('GET', url, true)
         request.responseType = 'arraybuffer'
-        request.onload = completeOnLoad
-        request.send()
-
-        function completeOnLoad() {
-            let source = context.createBufferSource()
-            console.log('オーディオをデコード')
-            context.decodeAudioData(request.response, function (buf) {
-                source.buffer = buf
+        request.onload = () => {
+            const source = this.context.createBufferSource()
+            this.context.decodeAudioData(request.response, buffer => {
+                source.buffer = buffer
                 source.loop = false
-                source.connect(context.destination)
-                source.start(0)
+                source.connect(this.context.destination)
+                source.start()
             })
         }
-
-    }
-
-
-    playSound () {
-        this.source.start()
+        request.send()
     }
 }
 
@@ -569,7 +517,7 @@ const main = () => {
     // ローカルストレージからパラメータを読み込む
     const storage = new Storage ('intervalTimer')
     const readyTime = 5
-    let activityTime = 13 //Number(storage.getItem('activityTime')) || 20
+    let activityTime = 12 //Number(storage.getItem('activityTime')) || 20
     let intervalTime = Number(storage.getItem('intervalTime')) || 10
     let setNumber = Number(storage.getItem('setNumber')) || 8
 
@@ -635,9 +583,6 @@ const main = () => {
     const dtIntervalLabel = new StyleLabel (dtInterval)
     const ddIntervalLabel = new StyleLabel (ddIntervalTime)
 
-    
-
-
     // SubTimerにObserverを追加する
     readyTimer.addLabel(readyLabel)
     activityTimer.addLabel(activityLabel)
@@ -651,13 +596,10 @@ const main = () => {
         readyTimer.addSoundPlayer(soundPlayer)
         activityTimer.addSoundPlayer(soundPlayer)
         intervalTimer.addSoundPlayer(soundPlayer)
-        // iOSでAudio再生のアンロック
+        // iOSでAudio再生のアンロックのため、ユーザーイベントでインスタンスを作成
         startBtn.addEventListener('click', function() {
-            console.log('test')
             const audio = new WebAudioPlayer ()
-            audio.getAudioBuffer('sound/count-down.mp3')
             soundPlayer.asignAudioPlayer(audio)
-            
         })
     }
     
