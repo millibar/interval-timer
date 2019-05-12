@@ -464,11 +464,6 @@ class CircleDrawer {
     }
 }
 
-
-
-
-
-
 /**
  * メインの処理
  */
@@ -517,7 +512,7 @@ const main = () => {
     // ローカルストレージからパラメータを読み込む
     const storage = new Storage ('intervalTimer')
     const readyTime = 5
-    let activityTime = 12 //Number(storage.getItem('activityTime')) || 20
+    let activityTime = Number(storage.getItem('activityTime')) || 20
     let intervalTime = Number(storage.getItem('intervalTime')) || 10
     let setNumber = Number(storage.getItem('setNumber')) || 8
 
