@@ -63,7 +63,7 @@ class StyleLabel {
  * 引数を与えることで、特定の音声ファイルを再生させることも出来る。
  */
 class SoundPlayer {
-    constructor () {
+    constructor (WebAudioPlayer) {
         /*
         const files = ['count-down.wav', 'count-up.wav', 'finish.wav']
         let audios = []
@@ -74,7 +74,7 @@ class SoundPlayer {
         }
         this.audios = audios
         */
-        this.audioPlayer = new WebAudioPlayer ()
+        this.audioPlayer = WebAudioPlayer
     }
 
     update (subtimer) {
@@ -613,12 +613,13 @@ const main = () => {
     intervalTimer.addLabel(intrvalLabel)
     intervalTimer.addLabel(dtIntervalLabel)
     intervalTimer.addLabel(ddIntervalLabel)
-    if (useSound) {
-        const soundPlayer = new SoundPlayer ()
+    /*if (useSound) {
+        const audio = new WebAudioPlayer ()
+        const soundPlayer = new SoundPlayer (audio)
         readyTimer.addSoundPlayer(soundPlayer)
         activityTimer.addSoundPlayer(soundPlayer)
         intervalTimer.addSoundPlayer(soundPlayer)
-    }
+    }*/
     
 
     // TimerにObserverを追加する
@@ -676,6 +677,13 @@ const main = () => {
     
     const start = () => {
         console.log('start clicked')
+        if (useSound) {
+            const audio = new WebAudioPlayer ()
+            const soundPlayer = new SoundPlayer (audio)
+            readyTimer.addSoundPlayer(soundPlayer)
+            activityTimer.addSoundPlayer(soundPlayer)
+            intervalTimer.addSoundPlayer(soundPlayer)
+        }
         timer.start()
         disableBtn (startBtn)
         enableBtn (pauseBtn)
