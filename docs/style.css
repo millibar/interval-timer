@@ -120,7 +120,6 @@ h1 {
     /*outline: 1px solid gray;*/
     margin: 0;
     padding: 0;
-    
 }
 
 #total-label {
@@ -171,7 +170,7 @@ canvas {
     width: 50vh;
     height: 50vh;
     max-width: 100%;
-    /* outline: 1px solid blue;*/
+    /*outline: 1px solid blue;*/
 }
 
 #count-down {

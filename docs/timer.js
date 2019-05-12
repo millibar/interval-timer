@@ -64,6 +64,7 @@ class StyleLabel {
  */
 class SoundPlayer {
     constructor () {
+        /*
         const files = ['count-down.wav', 'count-up.wav', 'finish.wav']
         let audios = []
         for (let file of files) {
@@ -72,12 +73,17 @@ class SoundPlayer {
             audios.push(audio)
         }
         this.audios = audios
+        */
+        this.audioPlayer = new WebAudioPlayer ()
     }
 
     update (subtimer) {
         if (subtimer.currentTime <= 3 && subtimer.currentTime > 0) {
-            let countDownSound = this.audios[0]
-            countDownSound.play()
+            //let countDownSound = this.audios[0]
+            //countDownSound.play()
+            
+            this.play(0)
+
         }
     }
 
@@ -86,8 +92,55 @@ class SoundPlayer {
      * @param {number} index 
      */
     play (index) {
-        let sound = this.audios[index]
-        sound.play()
+        //let sound = this.audios[index]
+        //sound.play()
+        switch (index) {
+            case 0:
+                this.audioPlayer.getAudioBuffer('sound/count-down.mp3')
+                break
+            case 1:
+                this.audioPlayer.getAudioBuffer('sound/count-up.mp3')
+                break
+            case 2:
+                this.audioPlayer.getAudioBuffer('sound/finish.mp3')
+                break
+            default:
+                console.log('何もしない')
+        }
+        this.audioPlayer.playSound()
+    }
+}
+
+/**
+ * SoundPlayer内で使われる。
+ */
+class WebAudioPlayer {
+    constructor () {
+        this.audioCtx = new (window.AudioContext || window.webkitAudioContext) ()
+        this.source = null
+    }
+        
+    getAudioBuffer (url) {
+        this.source = this.audioCtx.createBufferSource()
+        let req = new XMLHttpRequest ()
+        
+        req.open('GET', url, true)
+        
+        req.responseType = 'arraybuffer'
+        req.onload = () => {
+            let audioData = req.response
+
+            this.audioCtx.decodeAudioData(audioData, buffer => {
+                this.source.buffer = buffer
+                this.source.connect(this.audioCtx.destination)
+            })
+        }
+        
+        req.send()
+    }
+
+    playSound () {
+        this.source.start()
     }
 }
 
@@ -549,6 +602,9 @@ const main = () => {
     const dtIntervalLabel = new StyleLabel (dtInterval)
     const ddIntervalLabel = new StyleLabel (ddIntervalTime)
 
+    
+
+
     // SubTimerにObserverを追加する
     readyTimer.addLabel(readyLabel)
     activityTimer.addLabel(activityLabel)
@@ -616,6 +672,7 @@ const main = () => {
     }
 
     init ()
+    
     
     const start = () => {
         console.log('start clicked')

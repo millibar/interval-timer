@@ -33,9 +33,9 @@ const FILES_TO_CACHE = [
     './timer.js',
     './storage.js',
     './style.css',
-    './sound/count-down.wav',
-    './sound/count-up.wav',
-    './sound/finish.wav',
+    './sound/count-down.mp3',
+    './sound/count-up.mp3',
+    './sound/finish.mp3',
     './img/setting@3x.png',
     'https://fonts.googleapis.com/css?family=Open+Sans'
 ];
