@@ -63,7 +63,7 @@ class StyleLabel {
  * 引数を与えることで、特定の音声ファイルを再生させることも出来る。
  */
 class SoundPlayer {
-    constructor (WebAudioPlayer) {
+    constructor () {
         /*
         const files = ['count-down.wav', 'count-up.wav', 'finish.wav']
         let audios = []
@@ -74,7 +74,11 @@ class SoundPlayer {
         }
         this.audios = audios
         */
-        this.audioPlayer = WebAudioPlayer
+        this.audioPlayer = null
+    }
+
+    asignAudioPlayer (audioPlayer) {
+        this.audioPlayer = audioPlayer
     }
 
     update (subtimer) {
@@ -115,7 +119,8 @@ class SoundPlayer {
  */
 class WebAudioPlayer {
     constructor () {
-        this.audioCtx = new (window.AudioContext || window.webkitAudioContext) ()
+        window.AudioContext = window.AudioContext || window.webkitAudioContext
+        this.audioCtx = new window.AudioContext()
         this.source = null
     }
         
@@ -127,6 +132,7 @@ class WebAudioPlayer {
         
         req.responseType = 'arraybuffer'
         req.onload = () => {
+            
             let audioData = req.response
 
             this.audioCtx.decodeAudioData(audioData, buffer => {
@@ -535,7 +541,7 @@ const main = () => {
     // ローカルストレージからパラメータを読み込む
     const storage = new Storage ('intervalTimer')
     const readyTime = 5
-    let activityTime = Number(storage.getItem('activityTime')) || 20
+    let activityTime = Number(storage.getItem('activityTime')) || 15
     let intervalTime = Number(storage.getItem('intervalTime')) || 10
     let setNumber = Number(storage.getItem('setNumber')) || 8
 
@@ -614,7 +620,8 @@ const main = () => {
     intervalTimer.addLabel(ddIntervalLabel)
     if (useSound) {
         const audio = new WebAudioPlayer ()
-        const soundPlayer = new SoundPlayer (audio)
+        const soundPlayer = new SoundPlayer ()
+        soundPlayer.asignAudioPlayer(audio)
         readyTimer.addSoundPlayer(soundPlayer)
         activityTimer.addSoundPlayer(soundPlayer)
         intervalTimer.addSoundPlayer(soundPlayer)
