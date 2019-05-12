@@ -679,6 +679,8 @@ const main = () => {
         console.log('start clicked')
         if (useSound) {
             const audio = new WebAudioPlayer ()
+            audio.getAudioBuffer('sound/count-down.mp3')
+            audio.playSound(0)
             const soundPlayer = new SoundPlayer (audio)
             readyTimer.addSoundPlayer(soundPlayer)
             activityTimer.addSoundPlayer(soundPlayer)
