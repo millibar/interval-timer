@@ -541,7 +541,7 @@ const main = () => {
     // ローカルストレージからパラメータを読み込む
     const storage = new Storage ('intervalTimer')
     const readyTime = 5
-    let activityTime = Number(storage.getItem('activityTime')) || 15
+    let activityTime = 15 //Number(storage.getItem('activityTime')) || 20
     let intervalTime = Number(storage.getItem('intervalTime')) || 10
     let setNumber = Number(storage.getItem('setNumber')) || 8
 
