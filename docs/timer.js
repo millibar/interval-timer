@@ -83,7 +83,6 @@ class SoundPlayer {
             //countDownSound.play()
             
             this.play(0)
-
         }
     }
 
@@ -613,13 +612,13 @@ const main = () => {
     intervalTimer.addLabel(intrvalLabel)
     intervalTimer.addLabel(dtIntervalLabel)
     intervalTimer.addLabel(ddIntervalLabel)
-    /*if (useSound) {
+    if (useSound) {
         const audio = new WebAudioPlayer ()
         const soundPlayer = new SoundPlayer (audio)
         readyTimer.addSoundPlayer(soundPlayer)
         activityTimer.addSoundPlayer(soundPlayer)
         intervalTimer.addSoundPlayer(soundPlayer)
-    }*/
+    }
     
 
     // TimerにObserverを追加する
@@ -677,15 +676,6 @@ const main = () => {
     
     const start = () => {
         console.log('start clicked')
-        if (useSound) {
-            const audio = new WebAudioPlayer ()
-            audio.getAudioBuffer('sound/count-down.mp3')
-            audio.playSound(0)
-            const soundPlayer = new SoundPlayer (audio)
-            readyTimer.addSoundPlayer(soundPlayer)
-            activityTimer.addSoundPlayer(soundPlayer)
-            intervalTimer.addSoundPlayer(soundPlayer)
-        }
         timer.start()
         disableBtn (startBtn)
         enableBtn (pauseBtn)
