@@ -126,10 +126,11 @@ class WebAudioPlayer {
 }
 
 /**
- * setIntervalで時間の経過を管理する。ObserverパターンのSubject役。
- * Observerとして、ReadyTimer, ActivitiTimer, IntervalTimerの３つのSubTimerと
- * TimeLabel, SetLabelの画面表示用のラベルを保持する。
- * タイマーの更新ごとに、各Observerに更新を通知する。
+ * SubTimerのObserver役。
+ * ReadyTimer, ActivitiTimer, IntervalTimerの３つのSubTimerから通知を受けて値を更新する。
+ * 
+ * LabelのSubject役でもある。
+ * 自身の更新をTimeLabel, SetLabelの画面表示用のラベルに通知する。
  */
 class Timer {
     constructor (args) {
@@ -138,17 +139,9 @@ class Timer {
         this.setNumber = args['setNumber']
         this.currentSetNumber = 0
         
-        this.timeId = null   // setIntervalのID
-        this.step = 0        // setIntervalごとにカウントアップし、一定値になったらcurrentTimeを減らす
         this.subtimers = []  // ReadyTimer, ActivityTimer, IntervalTimerを入れる
-        this.index = 0       // 更新を通知するSubTimerを決める。
+        this.index = 0       // アクティブなSubTimerを決める。
         this.labels = []     // TimeLabel, SetLabelを入れる。
-
-        this.startTime = 0
-        this.lapsedTime_ms = 0 // startしてからの経過時間
-        this.timeOffset = 0 // pauseしたときの時刻を保持しておく
-
-        this.fps = 25 // 1000/fps msをsetIntervalに指定する
     }
 
     addSubtimer (subtimer) {
@@ -166,106 +159,124 @@ class Timer {
 
     // タイマーを開始する。pause()が呼ばれると、タイマーは一時停止する。
     start () {
-        this.timeId = window.setInterval (this.stepUp.bind(this),  1000/this.fps) 
         this.subtimers[this.index].start()
-
-        const pausedTime = this.timeOffset
-        const timeSincePause = performance.now() - pausedTime
-        this.timeOffset = 0
-        this.startTime = timeSincePause
     }
 
     // pauseBtnから呼ばれる。start()したタイマーを一時停止する。
     pause () {
-        window.clearInterval(this.timeId)
         this.subtimers[this.index].pause()
-
-        const pausedTime = performance.now() - this.startTime
-        this.timeOffset = pausedTime
     }
 
     // resetBtnから呼ばれる。
     reset () {
-        window.clearInterval(this.timeId)
         this.subtimers[this.index].reset()
         this.currentTime = this.totalTime
         this.currentSetNumber = 0
-        this.notify(this.labels)
         this.index = 0
-        this.step = 0
-
-        this.startTime = 0
-        this.lapsedTime_ms = 0
-        this.timeOffset = 0
+        this.notify(this.labels)
     }
 
-    // setIntervalごとに呼ばれる。stepが一定値になったらcountDown()を実行する。
-    stepUp () {
-        if (this.step < this.fps) {
-            this.step += 1
+    // SubTimerのカウントが0になったときに呼ばれる
+    goNext () {
+        let subtimer = this.subtimers[this.index]
+        switch (subtimer.type) {
+            case 'ready':
+                // readyLabelを隠す
+                subtimer.labels[0].element.classList.add('invisible')
+                break
+            case 'activity':
+                this.currentSetNumber += 1
+                this.notify(this.labels)
+                if (subtimer.soundPlayers.length > 0) {
+                    subtimer.soundPlayers[0].play(1) // 1: count-up
+                }
+                const ddSetCount = document.getElementById('set-count') 
+                ddSetCount.classList.toggle('set-up')
+                break
+            case 'interval':
+                // 何もしない
+                break
+            default:
+                break
         }
-
-        if (this.step >= this.fps) {
-            this.step = 0
-            this.countDown()
-        }
-    }
-
-    // stepが一定値になったら自身とSubTimerのcurrentTimeを減らす。
-    countDown () {
-        if (this.currentTime > 0) {
-            this.lapsedTime_ms = performance.now() - this.startTime
-            this.currentTime = this.totalTime - Math.round(this.lapsedTime_ms / 1000)
-
-            this.subtimers[this.index].countDown(this)
-            this.notify(this.labels)
-        }
-
-        // カウント0で完了
-        if (this.currentTime <= 0) {
-            window.clearInterval(this.timeId)
-
-            if (this.subtimers[0].soundPlayers[0]){
-                const soundPlayer = this.subtimers[0].soundPlayers[0]
-                soundPlayer.play(2) // 2: finish
+        // 次のSubTimerに進めるなら進む。進めないなら終了
+        if (this.index + 1 < this.subtimers.length) {
+            // ready以外なら、#count-downをひっくり返す
+            if (this.index > 0) {
+                let hasIntervalTimer = false
+                for (let subtimer of this.subtimers) {
+                    if (subtimer.type === 'interval') {
+                        hasIntervalTimer = true
+                        break
+                    }
+                }
+                if (hasIntervalTimer) {
+                    const countDownArea = document.getElementById('count-down')
+                    countDownArea.classList.toggle('flip')
+                }
             }
-            
-            const txtReady = document.getElementById('ready')
-            const txtActivity = document.getElementById('activity')
-            const txtInterval = document.getElementById('interval')
-            const countDownArea = document.getElementById('count-down')
-            txtActivity.classList.add('invisible')
-            txtInterval.classList.add('invisible')
-            txtReady.classList.remove('invisible')
-            txtReady.classList.remove('ready-count')
-            txtReady.textContent = 'Finish!'
-            countDownArea.classList.remove('flip')
-            txtReady.classList.add('rubberBand')
-
-            const pauseBtn = document.getElementById('pause-btn')
-            const resetBtn = document.getElementById('reset-btn')
-            disableBtn (pauseBtn)
-            enableBtn (resetBtn)
+            this.index += 1
+            this.subtimers[this.index].start()
+        } else {
+            this.finish()
         }
+    }
+
+    finish () {
+        if (this.subtimers[0].soundPlayers[0]){
+            const soundPlayer = this.subtimers[0].soundPlayers[0]
+            soundPlayer.play(2) // 2: finish
+        }
+        
+        const txtReady = document.getElementById('ready')
+        const txtActivity = document.getElementById('activity')
+        const txtInterval = document.getElementById('interval')
+        const countDownArea = document.getElementById('count-down')
+        txtActivity.classList.add('invisible')
+        txtInterval.classList.add('invisible')
+        txtReady.classList.remove('invisible')
+        txtReady.classList.remove('ready-count')
+        txtReady.textContent = 'Finish!'
+        countDownArea.classList.remove('flip')
+        txtReady.classList.add('rubberBand')
+
+        const pauseBtn = document.getElementById('pause-btn')
+        const resetBtn = document.getElementById('reset-btn')
+        disableBtn (pauseBtn)
+        enableBtn (resetBtn)
+    }
+
+    // SubTimerから呼ばれる
+    countDown () {
+        this.currentTime -= 1
+        this.notify(this.labels)
     }
 }
 
 /**
- * TimerのObserverのひとつであると同時に、Animator, TimeLabel, StyleLabelに対するSubjectでもある。
- * Timerが更新されると自身のObserverであるAnimator, TimeLabel, StyleLabelに通知する。
+ * ObserverパターンのSubject役。requestAnimationFrameごとに更新される。
+ * 更新をObserverであるTimeLabel, StyleLabel, SoundPlayerに通知する。
+ * また、currentTimeが0になったときはTimerに通知する
  */
 class SubTimer {
     constructor (args) {
         this.totalTime = args['totalTime']
         this.currentTime = this.totalTime
         this.type = args['type'] // 'ready', 'activity', 'interval'
-        this.animator = null
+
+        this.timer = null
         this.labels = []
         this.soundPlayers = []
+
+        this.reqId = null
+        this.startTime = 0
+        this.lapsedTime_ms = 0 // startしてからの経過時間
+        this.timeOffset = 0 // pauseしたときの時刻を保持しておく
+        this.drawer = null
     }
 
-    asignAnimator (animator) {
-        this.animator = animator
+    assignTimer (timer) {
+        this.timer = timer
     }
 
     addLabel (label) {
@@ -276,133 +287,53 @@ class SubTimer {
         this.soundPlayers.push(soundPlayer)
     }
 
-    // Observerに更新を通知する。引数にはthis.labelsを想定する。
+    assignDrawer (drawer) {
+        this.drawer = drawer
+    }
+
+    // Observerに更新を通知する。
     notify (observers) {
         observers.forEach (observer => observer.update(this)) 
     }
 
-    // Timerから呼ばれる。アニメーションの開始をAnimatorに通知する。
-    start () {
-        this.notify (this.labels)
-        if (this.animator) {
-            this.animator.start()
-            window.requestAnimationFrame(this.animate.bind(this))
-        }
+    // Timerにカウントが0になったことを通知する
+    goNext () {
+        this.timer.goNext()
     }
 
-    // Timerから呼ばれる。アニメーションの一時停止をAnimatorに通知する。
-    pause () {
-        if (this.animator) {
-            this.animator.pause ()
-        }
+    // Timerにカウントダウンを通知する
+    countDown () {
+        this.timer.countDown()
     }
 
     // Timerから呼ばれる。
-    reset () {
-        if (this.animator) {
-            this.animator.reset ()
-        }
-        this.currentTime = this.totalTime
-        this.notify (this.labels)
-    }
-
-    // TimerのcountDownごとに呼ばれる。
-    countDown (timer) {
-        if (this.currentTime > 0) {
-            this.currentTime -= 1
-            this.notify (this.labels)
-            if (this.soundPlayers.length > 0) {
-                this.notify (this.soundPlayers)
-            }
-        }
-
-        // カウンタが0になっていればカウンタを戻し、Timerのインデックスを進めて次のSubTimerをstartする
-        if (this.currentTime <= 0) {
-            this.currentTime = this.totalTime
-            
-            if (timer.index + 1 < timer.subtimers.length) {
-
-                // ready以外なら、#count-downをひっくり返す
-                if (timer.index > 0) {
-                    let hasIntervalTimer = false
-                    for (let subtimer of timer.subtimers) {
-                        if (subtimer.type === 'interval') {
-                            hasIntervalTimer = true
-                            break
-                        }
-                    }
-                    if (hasIntervalTimer) {
-                        const countDownArea = document.getElementById('count-down')
-                        countDownArea.classList.toggle('flip')
-                    }
-                }
-
-                timer.index += 1
-                timer.subtimers[timer.index].start()
-            }
-            switch (this.type) {
-                case 'ready':
-                    // readyLabelを隠す
-                    this.labels[0].element.classList.add('invisible')
-                    break
-                case 'activity':
-                    timer.currentSetNumber += 1
-                    if (this.soundPlayers.length > 0) {
-                        this.soundPlayers[0].play(1) // 1: count-up
-                    }
-                    const ddSetCount = document.getElementById('set-count') 
-                    ddSetCount.classList.toggle('set-up')
-                    break
-                case 'interval':
-                    // 何もしない
-                    break
-                default:
-                    break
-            }
-        }
-    }
-
-    // 自身のrequestAnimationFrameごとに呼ばれる。Animatorに更新を通知する。
-    animate () {
-        this.animator.reqId = window.requestAnimationFrame(this.animate.bind(this))
-        this.animator.update()
-    }
-
-}
-
-/**
- * SubTimerのObserverのひとつ。requestAnimationFrameのリクエストごとにSubTimerから呼ばれる。
- */
-class Animator {
-    constructor (drawer, duration) {
-        this.startTime = 0
-        this.timeOffset = 0 // pauseしたときの時刻を保持しておく
-        this.reqId = null
-        this.drawer = drawer
-        this.duration = duration
-    }
-
-    // アニメーション開始。前回の一時停止時からの経過時間を保持しておく。
     start () {
+        this.notify(this.labels)
+        this.reqId = window.requestAnimationFrame(this.update.bind(this))
+
         const pausedTime = this.timeOffset
         const timeSincePause = performance.now() - pausedTime
-        
         this.timeOffset = 0
         this.startTime = timeSincePause
     }
 
-    // アニメーション一時停止。アニメーション開始時からの一時停止までの経過時間を保持しておく。
+    // Timerから呼ばれる。
     pause () {
-        const pausedTime = performance.now() - this.startTime
-
-        this.timeOffset = pausedTime
         cancelAnimationFrame(this.reqId)
+
+        const pausedTime = performance.now() - this.startTime
+        this.timeOffset = pausedTime
     }
 
-    // 情報をリセットする。
+    // Timerから呼ばれる。
     reset () {
-        this.drawer.erase()
+        cancelAnimationFrame(this.reqId)
+        if (this.drawer) this.drawer.erase()
+        this.currentTime = this.totalTime
+        this.notify (this.labels)
+
         this.startTime = 0
+        this.lapsedTime_ms = 0
         this.timeOffset = 0
     }
 
@@ -418,24 +349,40 @@ class Animator {
         return progress
     }
 
-    // 描画ごとにここが呼ばれる
+    // 自身のrequestAnimationFrameごとに呼ばれる。
     update () {
-        const currentTime = performance.now() - this.startTime
-        const startValue = -90
-        const endValue = 270
-        const duration_ms = this.duration * 1000
+        this.reqId = window.requestAnimationFrame(this.update.bind(this))
+        this.lapsedTime_ms = performance.now() - this.startTime
+        console.log(`経過時間：${this.lapsedTime_ms}ms`)
         
-        const angle = this.getProgress(currentTime, startValue, endValue, duration_ms)
+        // 円を描くアニメーションを更新する
+        if (this.drawer) {
+            const startValue = -90
+            const endValue = 270
+            const duration_ms = this.totalTime * 1000
+            const angle = this.getProgress(this.lapsedTime_ms, startValue, endValue, duration_ms)
+            this.drawer.draw(angle)
+        }
 
-        this.drawer.draw(angle)
-
-        if (angle >= endValue) {
-            cancelAnimationFrame(this.reqId)
-            this.drawer.erase()
-            //console.log('円を描くアニメ終わり')
+        // カウントを進める
+        const currentTime = this.totalTime - Math.round(this.lapsedTime_ms/1000)
+        if (this.currentTime - currentTime >= 1) {
+            this.currentTime = currentTime
+            this.notify(this.labels)
+            if (this.soundPlayers.length > 0) {
+                this.notify(this.soundPlayers)
+            }
+            this.countDown()
+        }
+        
+        // カウントが0になったらTimerに通知する。カウントを戻す。
+        if (this.currentTime <= 0) {
+            this.reset()
+            this.goNext()
         }
     }
 }
+
 
 /**
  * 円を描く。Animatorから呼ばれる。
@@ -572,13 +519,14 @@ const main = () => {
     const activityDrawer = new CircleDrawer(canvas, -90, undefined, activityColor)
     const intervalDrawer = new CircleDrawer(canvas, undefined, 270, intervalColor)
 
-    // AnimatorにCicleDrawerを登録する
-    const acivityAnimator = new Animator(activityDrawer, activityTime)
-    const intervalAnimator = new Animator(intervalDrawer, intervalTime)
+    // SubTimerにTimerを登録する
+    readyTimer.assignTimer(timer)
+    activityTimer.assignTimer(timer)
+    intervalTimer.assignTimer(timer)
 
-    // SubTimerにAnimatorを登録する
-    activityTimer.asignAnimator(acivityAnimator)
-    intervalTimer.asignAnimator(intervalAnimator)   
+    // SubTimerにCicleDrawerを登録する
+    activityTimer.assignDrawer(activityDrawer)
+    intervalTimer.assignDrawer(intervalDrawer)
 
     // TimeLabel, SetLabel, ReadyLabelを用意する
     const totalTimeLabel = new TimeLabel (ddTotalTime)
