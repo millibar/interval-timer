@@ -64,11 +64,11 @@ class StyleLabel {
  */
 class SoundPlayer {
     constructor () {
-        this.audioPlayer = null
+        this.audio = null
     }
 
-    asignAudioPlayer (audioPlayer) {
-        this.audioPlayer = audioPlayer
+    assignAudio (audio) {
+        this.audio = audio
     }
 
     update (subtimer) {
@@ -84,13 +84,13 @@ class SoundPlayer {
     play (index) {
         switch (index) {
             case 0:
-                this.audioPlayer.play('sound/count-down.mp3')
+                this.audio.play('sound/count-down.mp3')
                 break
             case 1:
-                this.audioPlayer.play('sound/count-up.mp3')
+                this.audio.play('sound/count-up.mp3')
                 break
             case 2:
-                this.audioPlayer.play('sound/finish.mp3')
+                this.audio.play('sound/finish.mp3')
                 break
             default:
                 break
@@ -101,7 +101,7 @@ class SoundPlayer {
 /**
  * SoundPlayer内で使われる。
  */
-class WebAudioPlayer {
+class WebAudio {
     constructor () {
         window.AudioContext = window.AudioContext || window.webkitAudioContext
         this.context = new AudioContext()
@@ -309,7 +309,7 @@ class SubTimer {
     // Timerから呼ばれる。
     start () {
         this.notify(this.labels)
-        this.reqId = window.requestAnimationFrame(this.update.bind(this))
+        window.requestAnimationFrame(this.update.bind(this))
 
         const pausedTime = this.timeOffset
         const timeSincePause = performance.now() - pausedTime
@@ -329,9 +329,9 @@ class SubTimer {
     reset () {
         cancelAnimationFrame(this.reqId)
         if (this.drawer) this.drawer.erase()
-        this.currentTime = this.totalTime
         this.notify (this.labels)
-
+        
+        this.currentTime = this.totalTime
         this.startTime = 0
         this.lapsedTime_ms = 0
         this.timeOffset = 0
@@ -353,7 +353,6 @@ class SubTimer {
     update () {
         this.reqId = window.requestAnimationFrame(this.update.bind(this))
         this.lapsedTime_ms = performance.now() - this.startTime
-        console.log(`経過時間：${this.lapsedTime_ms}ms`)
         
         // 円を描くアニメーションを更新する
         if (this.drawer) {
@@ -363,11 +362,11 @@ class SubTimer {
             const angle = this.getProgress(this.lapsedTime_ms, startValue, endValue, duration_ms)
             this.drawer.draw(angle)
         }
-
+        
         // カウントを進める
-        const currentTime = this.totalTime - Math.round(this.lapsedTime_ms/1000)
-        if (this.currentTime - currentTime >= 1) {
-            this.currentTime = currentTime
+        const currentTime_ms = this.totalTime * 1000 - this.lapsedTime_ms
+        if (this.currentTime * 1000 - currentTime_ms >= 1000) {
+            this.currentTime = Math.round(currentTime_ms/1000)
             this.notify(this.labels)
             if (this.soundPlayers.length > 0) {
                 this.notify(this.soundPlayers)
@@ -556,8 +555,8 @@ const main = () => {
         intervalTimer.addSoundPlayer(soundPlayer)
         // iOSでAudio再生のアンロックのため、ユーザーイベントでインスタンスを作成
         startBtn.addEventListener('click', function() {
-            const audio = new WebAudioPlayer ()
-            soundPlayer.asignAudioPlayer(audio)
+            const audio = new WebAudio ()
+            soundPlayer.assignAudio(audio)
         })
     }
     
@@ -605,6 +604,8 @@ const main = () => {
         ddActivityTime.classList.add('disabled')
         dtInterval.classList.add('disabled')
         ddIntervalTime.classList.add('disabled')
+
+        
         
         disableBtn (pauseBtn)
         disableBtn (resetBtn)
