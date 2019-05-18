@@ -82,8 +82,6 @@ class SoundPlayer {
      * @param {number} index 
      */
     play (index) {
-        this.audioPlayer.play(index)
-        /*
         switch (index) {
             case 0:
                 this.audioPlayer.play('sound/count-down.mp3')
@@ -96,7 +94,7 @@ class SoundPlayer {
                 break
             default:
                 break
-        }*/
+        }
     }
 }
 
@@ -105,41 +103,11 @@ class SoundPlayer {
  */
 class WebAudioPlayer {
     constructor () {
-        //window.AudioContext = window.AudioContext || window.webkitAudioContext
-        //this.context = new AudioContext()
-        //console.log('AudioContextの生成')
-        //this.context.createBufferSource().start(0)
-        this.sources = []
+        window.AudioContext = window.AudioContext || window.webkitAudioContext
+        this.context = new AudioContext()
+        this.context.createBufferSource().start(0)
     }
-
-    addSource (url) {
-        const source = new Audio (url)
-        this.sources.push(source)
-        console.log(`${url}を読み込んでaudio要素を作成`)
-        /*
-        const request = new XMLHttpRequest()
-        request.open('GET', url, true)
-        request.responseType = 'arraybuffer'
-        request.onload = () => {
-            const source = this.context.createBufferSource()
-            this.sources.push(source)
-            this.context.decodeAudioData(request.response, buffer => {
-                source.buffer = buffer
-                source.loop = false
-                source.connect(this.context.destination)
-                //source.start()
-            })
-        }
-        request.send()
-        */
-    }
-
-    play (index) {
-        this.sources[index].play()
-    }
-
-
-    /*
+    
     play (url) {
         const request = new XMLHttpRequest()
         request.open('GET', url, true)
@@ -154,7 +122,7 @@ class WebAudioPlayer {
             })
         }
         request.send()
-    }*/
+    }
 }
 
 /**
@@ -641,9 +609,6 @@ const main = () => {
         // iOSでAudio再生のアンロックのため、ユーザーイベントでインスタンスを作成
         startBtn.addEventListener('click', function() {
             const audio = new WebAudioPlayer ()
-            audio.addSource('sound/count-down.mp3')
-            audio.addSource('sound/count-up.mp3')
-            audio.addSource('sound/finish.mp3')
             soundPlayer.asignAudioPlayer(audio)
         })
     }
