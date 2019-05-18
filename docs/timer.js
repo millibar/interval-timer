@@ -143,6 +143,12 @@ class Timer {
         this.subtimers = []  // ReadyTimer, ActivityTimer, IntervalTimerを入れる
         this.index = 0       // 更新を通知するSubTimerを決める。
         this.labels = []     // TimeLabel, SetLabelを入れる。
+
+        this.startTime = 0
+        this.lapsedTime_ms = 0 // startしてからの経過時間
+        this.timeOffset = 0 // pauseしたときの時刻を保持しておく
+
+        this.fps = 20 // 1000/fps msをsetIntervalに指定する
     }
 
     addSubtimer (subtimer) {
@@ -160,14 +166,22 @@ class Timer {
 
     // タイマーを開始する。pause()が呼ばれると、タイマーは一時停止する。
     start () {
-        this.timeId = window.setInterval (this.stepUp.bind(this),  25) // 1000/25 = 40 FPS
+        this.timeId = window.setInterval (this.stepUp.bind(this),  1000/this.fps) 
         this.subtimers[this.index].start()
+
+        const pausedTime = this.timeOffset
+        const timeSincePause = performance.now() - pausedTime
+        this.timeOffset = 0
+        this.startTime = timeSincePause
     }
 
     // pauseBtnから呼ばれる。start()したタイマーを一時停止する。
     pause () {
         window.clearInterval(this.timeId)
         this.subtimers[this.index].pause()
+
+        const pausedTime = performance.now() - this.startTime
+        this.timeOffset = pausedTime
     }
 
     // resetBtnから呼ばれる。
@@ -179,15 +193,19 @@ class Timer {
         this.notify(this.labels)
         this.index = 0
         this.step = 0
+
+        this.startTime = 0
+        this.lapsedTime_ms = 0
+        this.timeOffset = 0
     }
 
     // setIntervalごとに呼ばれる。stepが一定値になったらcountDown()を実行する。
     stepUp () {
-        if (this.step < 40) {
+        if (this.step < this.fps) {
             this.step += 1
         }
 
-        if (this.step >= 40) {
+        if (this.step >= this.fps) {
             this.step = 0
             this.countDown()
         }
@@ -196,7 +214,8 @@ class Timer {
     // stepが一定値になったら自身とSubTimerのcurrentTimeを減らす。
     countDown () {
         if (this.currentTime > 0) {
-            if (this.index > 0) this.currentTime -= 1 // readyのときは総時間は減らさない
+            this.lapsedTime_ms = performance.now() - this.startTime
+            this.currentTime = this.totalTime - Math.round(this.lapsedTime_ms / 1000)
 
             this.subtimers[this.index].countDown(this)
             this.notify(this.labels)
@@ -468,7 +487,6 @@ class CircleDrawer {
  * メインの処理
  */
 const main = () => {
-    console.log('main loaded')
     // ボタン
     const startBtn = document.getElementById('start-btn')
     const pauseBtn = document.getElementById('pause-btn')
@@ -496,7 +514,6 @@ const main = () => {
         let maxWidth = Math.min(indicator.clientWidth, indicator.clientHeight)
         canvas.width = maxWidth //* devicePixelRatio
         canvas.height = maxWidth//* devicePixelRatio
-
     }
     resizeCanvas ()
 
@@ -526,11 +543,9 @@ const main = () => {
         useSound = true
     }
 
-    // 総時間を計算する。readyTimeは含めない
-    let totalTime = activityTime * setNumber + intervalTime * (setNumber - 1)
+    // 総時間を計算する
+    let totalTime = readyTime + activityTime * setNumber + intervalTime * (setNumber - 1)
     if (hasLastInterval) totalTime += intervalTime
-
-    console.log(`totalTime = ${totalTime}, readyTime = ${readyTime}`)
 
     // TimerとSubTimerをインスタンス化する
     const timer = new Timer ({
@@ -598,7 +613,6 @@ const main = () => {
         })
     }
     
-
     // TimerにObserverを追加する
     timer.addLabel(totalTimeLabel)
     timer.addLabel(setLabel)
@@ -676,18 +690,9 @@ const main = () => {
         init()
     }
     
-
-    
-
-
     startBtn.addEventListener('click', start, false)
     pauseBtn.addEventListener('click', pause, false)
     resetBtn.addEventListener('click', reset, false)
-
-
-
-
-
 }
 
 window.addEventListener('load', main, false)
