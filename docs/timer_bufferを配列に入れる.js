@@ -82,19 +82,7 @@ class SoundPlayer {
      * @param {number} index 
      */
     play (index) {
-        switch (index) {
-            case 0:
-                this.audioPlayer.play('sound/count-down.mp3')
-                break
-            case 1:
-                this.audioPlayer.play('sound/count-up.mp3')
-                break
-            case 2:
-                this.audioPlayer.play('sound/finish.mp3')
-                break
-            default:
-                break
-        }
+        this.audioPlayer.play(index)
     }
 }
 
@@ -106,19 +94,28 @@ class WebAudioPlayer {
         window.AudioContext = window.AudioContext || window.webkitAudioContext
         this.context = new AudioContext()
         this.context.createBufferSource().start(0)
+        this.requests = []
+        this.buffers = []
     }
-    
-    play (url) {
+
+    play (index) {
+        const source = this.context.createBufferSource()
+        
+        source.buffer = this.buffers[index]
+        source.loop = false
+        source.connect(this.context.destination)
+        source.start(0)
+    }
+
+    addSource (url) {
         const request = new XMLHttpRequest()
         request.open('GET', url, true)
         request.responseType = 'arraybuffer'
+        this.requests.push(request)
+
         request.onload = () => {
-            const source = this.context.createBufferSource()
             this.context.decodeAudioData(request.response, buffer => {
-                source.buffer = buffer
-                source.loop = false
-                source.connect(this.context.destination)
-                source.start()
+                this.buffers.push(buffer)
             })
         }
         request.send()
@@ -609,6 +606,9 @@ const main = () => {
         // iOSでAudio再生のアンロックのため、ユーザーイベントでインスタンスを作成
         startBtn.addEventListener('click', function() {
             const audio = new WebAudioPlayer ()
+            audio.addSource('sound/count-down.mp3')
+            audio.addSource('sound/count-up.mp3')
+            audio.addSource('sound/finish.mp3')
             soundPlayer.asignAudioPlayer(audio)
         })
     }
