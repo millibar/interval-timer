@@ -20,6 +20,11 @@ body {
     background: #fff;
 }
 
+h1 {
+    height: 8vh;
+    line-height: 8vh;
+}
+
 #to-setting {
     height: 4vh;
     width: 4vh;
@@ -31,34 +36,17 @@ body {
     line-height: 8vh;
 }
 
-h1 {
-    height: 8vh;
-    line-height: 8vh;
-    box-sizing: border-box;
-}
-
-#progress {
-    height: 6vh;
-    box-sizing: border-box;
-    /*background: #cfc;*/
-}
-
 #setting-info {
-    height: 8vh;
-    box-sizing: border-box;
-    /*background: #ffc;*/
+    height: 12vh;
 }
 
 #indicator {
     height: 50vh;
-    box-sizing: border-box;
-    /*background: #ccf;*/
 }
 
 #buttons {
-    height: 28vh;
-    box-sizing: border-box;
-    /*background: #fcf;*/
+    height: 30vh;
+    width: 30vh;
 }
 
 
@@ -67,7 +55,7 @@ h1 {
     margin: 0;
     padding: 0;
     text-align: center;
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: normal;
     background-image: linear-gradient(to bottom, #edeff1, 75%, #fefefe);
     box-shadow: 0 1px 3px 0px #ccc;
@@ -113,58 +101,18 @@ h1 {
     font-weight: bold;
 }
 
-#progress {
-    margin: 0;
-    padding: 0.4rem 0.6rem 0;
-    font-size: 1rem;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
-
-#progress progress {
-    width: calc(100% - 6em);
-    height: 45%;
-    background-color: #eee;
-    border: 1px solid #ddd;
-}
-
-#progress progress::-moz-progress-bar {
-    background-color: #42a4f4;
-}
-
-#progress progress::-webkit-progress-bar {
-    background-color: #eee;
-}
-
-#progress progress::-webkit-progress-value {
-    background-color: #42a4f4;
-}
-
-#progress span {
-    width: 3em;
-}
-
-#current-time {
-    text-align: left;
-}
-
-#total-time {
-    text-align: right;
-}
-
 #setting-info {
     /*outline: 1px solid blue;*/
     margin: 0;
-    padding: 0 0.6rem 0;
-    font-size: 1rem;
+    padding: 0.8rem 0.6rem 0;
+    font-size: 1.1rem;
     box-sizing: border-box;
     display: grid;
     grid-template-rows: 1fr 1fr;
-    grid-template-columns: 5em 5em 1fr 3em 3em;
+    grid-template-columns: 23% 21% 1fr 21% 23%;
     grid-template-areas:
-        "label11 value11 . set-label set-value"
-        "label21 value21 . set-label set-value";
+        "label11 value11 . label12 value12"
+        "label21 value21 . label22 value22";
 }
 
 #setting-info dt,
@@ -174,52 +122,55 @@ h1 {
     padding: 0;
 }
 
-#activity-label {
+#total-label {
     grid-area: label11;
-    text-align: left;
 }
 
-#activity-time {
+#total-time {
     grid-area: value11;
-    text-align: left;
-}
-
-#interval-label {
-    grid-area: label21;
-    text-align: left;
-}
-
-#interval-time {
-    grid-area: value21;
-    text-align: left;
 }
 
 #set-label {
-    grid-area: set-label;
+    grid-area: label12;
     text-align: right;
 }
 
 #set-count {
-    grid-area: set-value;
+    grid-area: value12;
     text-align: right;
 }
 
+#activity-label {
+    grid-area: label21;
+}
 
+#activity-time {
+    grid-area: value21;
+}
 
+#interval-label {
+    grid-area: label22;
+    text-align: right;
+}
 
+#interval-time {
+    grid-area: value22;
+    text-align: right;
+}
 
 #indicator {
     position: relative;
     width: 100%;
-    display:flex;
-    align-items: center;
     /*outline: 1px solid orange;*/
 }
 
 canvas {
     display: block;
     margin: auto;
-    /*outline: 3px double blue;*/
+    width: 50vh;
+    height: 50vh;
+    max-width: 100%;
+    /*outline: 1px solid blue;*/
 }
 
 #count-down {
@@ -394,8 +345,6 @@ button {
     box-shadow: 0 1px 2px 1px #eee;
     transition-property: box-shadow, background-image;
     transition-duration: 1s;
-    position:relative;
-    top: -0.5rem;
 }
 
 #butInstall {
@@ -424,24 +373,25 @@ button.disabled {
 
 #start-btn {
     order: 2;
-    width: 19.5vh;
-    height: 19.5vh;
-    font-size: 3.8vh;
-    margin: 0 0.5rem;
+    width: 28vmin;
+    height: 28vmin;
+    font-size: 6vmin;
+    margin-right: 1rem;
+    margin-left: 1rem;
 }
 
 #pause-btn {
     order: 3;
-    width: 10.5vh;
-    height: 10.5vh;
-    font-size: 2vh;
+    width: 20vmin;
+    height: 20vmin;
+    font-size: 3.5vmin;
 }
 
 #reset-btn {
     order: 1;
-    width: 10.5vh;
-    height: 10.5vh;
-    font-size: 2vh;
+    width: 20vmin;
+    height: 20vmin;
+    font-size: 3.5vmin;
 }
 
 .disabled {

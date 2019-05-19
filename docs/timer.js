@@ -27,6 +27,22 @@ class SetLabel {
 }
 
 /**
+ * progressバーを更新する。
+ * TimerのObserverのひとつ。
+ */
+class ProgressLabel {
+    constructor (element) {
+        this.element = element
+    }
+    update (timer, fraction_ms) {
+        let currentTime_ms = timer.currentTime * 1000
+        if (fraction_ms < 1000) currentTime_ms += fraction_ms
+        
+        this.element.value = currentTime_ms
+    }
+}
+
+/**
  * Readyのときの時間を画面に表示する。
  * ReadyTimerのObserverのひとつ。
  */
@@ -135,13 +151,14 @@ class WebAudio {
 class Timer {
     constructor (args) {
         this.totalTime = args['totalTime']
-        this.currentTime = this.totalTime
+        this.currentTime = 0 // this.totalTime
         this.setNumber = args['setNumber']
         this.currentSetNumber = 0
         
         this.subtimers = []  // ReadyTimer, ActivityTimer, IntervalTimerを入れる
         this.index = 0       // アクティブなSubTimerを決める。
         this.labels = []     // TimeLabel, SetLabelを入れる。
+        this.progressBar = null
     }
 
     addSubtimer (subtimer) {
@@ -150,6 +167,10 @@ class Timer {
 
     addLabel (label) {
         this.labels.push(label)
+    }
+
+    assignProgressBar (progressBar) {
+        this.progressBar = progressBar
     }
 
     // Observerに更新を通知する。引数にはthis.labelsを想定する。
@@ -170,7 +191,7 @@ class Timer {
     // resetBtnから呼ばれる。
     reset () {
         this.subtimers[this.index].reset()
-        this.currentTime = this.totalTime
+        this.currentTime = 0
         this.currentSetNumber = 0
         this.index = 0
         this.notify(this.labels)
@@ -247,11 +268,20 @@ class Timer {
     }
 
     // SubTimerから呼ばれる
-    countDown () {
-        this.currentTime -= 1
-        this.notify(this.labels)
+    update () {
+        if (this.index > 0) { // readyのときはなにもしない
+            this.currentTime += 1
+            this.notify(this.labels)
+        }
     }
-}
+
+     // SubTimerから呼ばれる 
+    updateProgress (fraction_ms) {
+        if (this.index > 0) { // readyのときはなにもしない
+            this.progressBar.update(this, fraction_ms)
+        }
+    }
+} 
 
 /**
  * ObserverパターンのSubject役。requestAnimationFrameごとに更新される。
@@ -299,11 +329,6 @@ class SubTimer {
     // Timerにカウントが0になったことを通知する
     goNext () {
         this.timer.goNext()
-    }
-
-    // Timerにカウントダウンを通知する
-    countDown () {
-        this.timer.countDown()
     }
 
     // Timerから呼ばれる。
@@ -362,17 +387,20 @@ class SubTimer {
             const angle = this.getProgress(this.lapsedTime_ms, startValue, endValue, duration_ms)
             this.drawer.draw(angle)
         }
-        
+
         // カウントを進める
         const currentTime_ms = this.totalTime * 1000 - this.lapsedTime_ms
-        if (this.currentTime * 1000 - currentTime_ms >= 1000) {
+        const fraction_ms = this.currentTime * 1000 - currentTime_ms
+        if (fraction_ms >= 1000) {
             this.currentTime = Math.round(currentTime_ms/1000)
             this.notify(this.labels)
             if (this.soundPlayers.length > 0) {
                 this.notify(this.soundPlayers)
             }
-            this.countDown()
+            this.timer.update()
         }
+
+        this.timer.updateProgress(fraction_ms)
         
         // カウントが0になったらTimerに通知する。カウントを戻す。
         if (this.currentTime <= 0) {
@@ -398,7 +426,7 @@ class CircleDrawer {
         const context = this.canvas.getContext('2d')
         const centerX = this.canvas.width/2
         const centerY = this.canvas.height/2
-        const radius = this.canvas.width * 0.4
+        const radius = this.canvas.width * 0.41
 
         let startRad
         if (this.startAngle === undefined) {
@@ -442,14 +470,20 @@ const main = () => {
     const indicator = document.getElementById('indicator')
     const countDownArea = document.getElementById('count-down')
     const canvas = document.createElement('canvas')
+
+    // #progressバー
+    const progressBar = document.getElementById('total-progress')
+    const progressCurrentTime = document.getElementById('current-time')
+    const progressTotalTime = document.getElementById('total-time')
     
     // #setting-info内のdt, dd
     const dtAtcivity = document.getElementById('activity-label')
-    const dtInterval = document.getElementById('interval-label')
-    const ddTotalTime = document.getElementById('total-time')
-    const ddSetCount = document.getElementById('set-count')
     const ddActivityTime = document.getElementById('activity-time')
+    const dtInterval = document.getElementById('interval-label')
     const ddIntervalTime = document.getElementById('interval-time')
+    const ddSetCount = document.getElementById('set-count')
+    
+    
 
     // #count-down内のspan
     const txtReady = document.getElementById('ready')
@@ -489,8 +523,8 @@ const main = () => {
         useSound = true
     }
 
-    // 総時間を計算する
-    let totalTime = readyTime + activityTime * setNumber + intervalTime * (setNumber - 1)
+    // 総時間を計算する。readyTimeは含めない
+    let totalTime = activityTime * setNumber + intervalTime * (setNumber - 1)
     if (hasLastInterval) totalTime += intervalTime
 
     // TimerとSubTimerをインスタンス化する
@@ -528,11 +562,13 @@ const main = () => {
     intervalTimer.assignDrawer(intervalDrawer)
 
     // TimeLabel, SetLabel, ReadyLabelを用意する
-    const totalTimeLabel = new TimeLabel (ddTotalTime)
+    const progressLabel = new ProgressLabel (progressBar)
+    const currentTimeLabel = new TimeLabel (progressCurrentTime)
     const setLabel = new SetLabel (ddSetCount)
     const readyLabel = new ReadyLabel (txtReady)
     const activityLabel = new TimeLabel (txtActivity) 
     const intrvalLabel = new TimeLabel (txtInterval)
+    
 
     // StyleLabelを用意する
     const dtActivityLabel = new StyleLabel (dtAtcivity)
@@ -561,7 +597,8 @@ const main = () => {
     }
     
     // TimerにObserverを追加する
-    timer.addLabel(totalTimeLabel)
+    timer.assignProgressBar(progressLabel)
+    timer.addLabel(currentTimeLabel)
     timer.addLabel(setLabel)
     
     // TimerにSubTimerを追加する
@@ -584,10 +621,13 @@ const main = () => {
         let activityTimeLabel = secToTimeLabel(activityTime)
         let intervalTimeLabel = secToTimeLabel(intervalTime)
 
-        ddTotalTime.textContent = totalTimeLabel
-        ddSetCount.textContent = `0/${setNumber}`
+        progressBar.value = 0
+        progressBar.max = totalTime * 1000
+
+        progressTotalTime.textContent = totalTimeLabel
         ddActivityTime.textContent = activityTimeLabel
         ddIntervalTime.textContent = intervalTimeLabel
+        ddSetCount.textContent = `0/${setNumber}`
 
         txtReady.textContent = 'Ready'
         txtActivity.textContent = activityTimeLabel
