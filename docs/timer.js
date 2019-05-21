@@ -34,11 +34,8 @@ class ProgressLabel {
     constructor (element) {
         this.element = element
     }
-    update (timer, fraction_ms) {
-        let currentTime_ms = timer.currentTime * 1000
-        if (fraction_ms < 1000) currentTime_ms += fraction_ms
-        
-        this.element.value = currentTime_ms
+    update (timer) {
+        this.element.value = timer.lapsedTime_ms
     }
 }
 
@@ -151,7 +148,7 @@ class WebAudio {
 class Timer {
     constructor (args) {
         this.totalTime = args['totalTime']
-        this.currentTime = 0 // this.totalTime
+        this.currentTime = 0
         this.setNumber = args['setNumber']
         this.currentSetNumber = 0
         
@@ -159,6 +156,10 @@ class Timer {
         this.index = 0       // アクティブなSubTimerを決める。
         this.labels = []     // TimeLabel, SetLabelを入れる。
         this.progressBar = null
+
+        this.startTime = 0
+        this.lapsedTime_ms = 0 // startしてからの経過時間
+        this.timeOffset = 0 // pauseしたときの時刻を保持しておく
     }
 
     addSubtimer (subtimer) {
@@ -169,10 +170,6 @@ class Timer {
         this.labels.push(label)
     }
 
-    assignProgressBar (progressBar) {
-        this.progressBar = progressBar
-    }
-
     // Observerに更新を通知する。引数にはthis.labelsを想定する。
     notify (observers) {
         observers.forEach (observer => observer.update(this)) 
@@ -181,11 +178,23 @@ class Timer {
     // タイマーを開始する。pause()が呼ばれると、タイマーは一時停止する。
     start () {
         this.subtimers[this.index].start()
+
+        if (this.index > 0) { // readyのときはlapsedTimeを進めない
+            const pausedTime = this.timeOffset
+            const timeSincePause = performance.now() - pausedTime
+            this.timeOffset = 0
+            this.startTime = timeSincePause
+        }
     }
 
     // pauseBtnから呼ばれる。start()したタイマーを一時停止する。
     pause () {
         this.subtimers[this.index].pause()
+
+        if (this.index > 0) {
+            const pausedTime = performance.now() - this.startTime
+            this.timeOffset = pausedTime
+        }
     }
 
     // resetBtnから呼ばれる。
@@ -195,6 +204,10 @@ class Timer {
         this.currentSetNumber = 0
         this.index = 0
         this.notify(this.labels)
+
+        this.startTime = 0
+        this.lapsedTime_ms = 0
+        this.timeOffset = 0
     }
 
     // SubTimerのカウントが0になったときに呼ばれる
@@ -204,6 +217,7 @@ class Timer {
             case 'ready':
                 // readyLabelを隠す
                 subtimer.labels[0].element.classList.add('invisible')
+                this.startTime = performance.now() // ここから経過時間を計測し始める
                 break
             case 'activity':
                 this.currentSetNumber += 1
@@ -270,15 +284,15 @@ class Timer {
     // SubTimerから呼ばれる
     update () {
         if (this.index > 0) { // readyのときはなにもしない
-            this.currentTime += 1
-            this.notify(this.labels)
-        }
-    }
+            this.lapsedTime_ms = performance.now() - this.startTime
 
-     // SubTimerから呼ばれる 
-    updateProgress (fraction_ms) {
-        if (this.index > 0) { // readyのときはなにもしない
-            this.progressBar.update(this, fraction_ms)
+            const currentTime_ms = this.lapsedTime_ms
+            const fraction_ms = currentTime_ms - this.currentTime * 1000
+            if (fraction_ms >= 1000) { // 1秒ごとに更新する。こうしないとSubTimerのカウントとのずれが目視でわかる
+                this.currentTime = Math.round(this.lapsedTime_ms/1000)
+            }
+
+            this.notify(this.labels)
         }
     }
 } 
@@ -388,7 +402,7 @@ class SubTimer {
             this.drawer.draw(angle)
         }
 
-        // カウントを進める
+        // 1秒ごとにカウントを進める
         const currentTime_ms = this.totalTime * 1000 - this.lapsedTime_ms
         const fraction_ms = this.currentTime * 1000 - currentTime_ms
         if (fraction_ms >= 1000) {
@@ -397,10 +411,11 @@ class SubTimer {
             if (this.soundPlayers.length > 0) {
                 this.notify(this.soundPlayers)
             }
-            this.timer.update()
         }
 
-        this.timer.updateProgress(fraction_ms)
+        this.timer.update()
+
+       
         
         // カウントが0になったらTimerに通知する。カウントを戻す。
         if (this.currentTime <= 0) {
@@ -483,8 +498,6 @@ const main = () => {
     const ddIntervalTime = document.getElementById('interval-time')
     const ddSetCount = document.getElementById('set-count')
     
-    
-
     // #count-down内のspan
     const txtReady = document.getElementById('ready')
     const txtActivity = document.getElementById('activity')
@@ -597,7 +610,7 @@ const main = () => {
     }
     
     // TimerにObserverを追加する
-    timer.assignProgressBar(progressLabel)
+    timer.addLabel(progressLabel)
     timer.addLabel(currentTimeLabel)
     timer.addLabel(setLabel)
     

@@ -116,7 +116,7 @@ h1 {
 #progress {
     margin: 0;
     padding: 0.4rem 0.6rem 0;
-    font-size: 1rem;
+    font-size: 1.1rem;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -124,21 +124,25 @@ h1 {
 
 #progress progress {
     width: calc(100% - 6em);
-    height: 45%;
+    height: 40%;
     background-color: #eee;
     border: 1px solid #ddd;
+    border-radius: 6px;
 }
 
 #progress progress::-moz-progress-bar {
     background-color: #42a4f4;
+    border-radius: 6px;
 }
 
 #progress progress::-webkit-progress-bar {
     background-color: #eee;
+    border-radius: 6px;
 }
 
 #progress progress::-webkit-progress-value {
     background-color: #42a4f4;
+    border-radius: 6px;
 }
 
 #progress span {
@@ -157,11 +161,11 @@ h1 {
     /*outline: 1px solid blue;*/
     margin: 0;
     padding: 0 0.6rem 0;
-    font-size: 1rem;
+    font-size: 1.1rem;
     box-sizing: border-box;
     display: grid;
     grid-template-rows: 1fr 1fr;
-    grid-template-columns: 5em 5em 1fr 3em 3em;
+    grid-template-columns: 4.5em 4.5em 1fr 2.5em 3em;
     grid-template-areas:
         "label11 value11 . set-label set-value"
         "label21 value21 . set-label set-value";
