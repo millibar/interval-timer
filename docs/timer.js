@@ -22,7 +22,7 @@ class SetLabel {
         this.element = element
     }
     update (timer) {
-        this.element.textContent = `${timer.currentSetNumber}/${timer.setNumber}`
+        this.element.textContent = `${timer.currentSetNumber} /${timer.setNumber}`
     }
 }
 
@@ -50,23 +50,6 @@ class ReadyLabel {
     update (timer) {
         this.element.textContent = timer.currentTime
         this.element.classList.add('ready-count')
-    }
-}
-
-/**
- * #setting-infoのActivityとIntervalのスタイルを切り替える。
- * ActivityTimer, IntervalTimerのObserverのひとつ。
- */
-class StyleLabel {
-    constructor (element) {
-        this.element = element
-    }
-    update (timer) {
-        if (timer.currentTime > 0) {
-            this.element.classList.remove('disabled')
-        } else {
-            this.element.classList.add('disabled')
-        }
     }
 }
 
@@ -213,10 +196,12 @@ class Timer {
     // SubTimerのカウントが0になったときに呼ばれる
     goNext () {
         let subtimer = this.subtimers[this.index]
+        const body = document.getElementsByTagName('body')[0]
         switch (subtimer.type) {
             case 'ready':
                 // readyLabelを隠す
                 subtimer.labels[0].element.classList.add('invisible')
+                body.classList.add('activity')
                 this.startTime = performance.now() // ここから経過時間を計測し始める
                 break
             case 'activity':
@@ -225,11 +210,12 @@ class Timer {
                 if (subtimer.soundPlayers.length > 0) {
                     subtimer.soundPlayers[0].play(1) // 1: count-up
                 }
-                const ddSetCount = document.getElementById('set-count') 
-                ddSetCount.classList.toggle('set-up')
+                body.classList.add('interval')
+                body.classList.remove('activity')
                 break
             case 'interval':
-                // 何もしない
+                body.classList.remove('interval')
+                body.classList.add('activity')
                 break
             default:
                 break
@@ -274,6 +260,10 @@ class Timer {
         txtReady.textContent = 'Finish!'
         countDownArea.classList.remove('flip')
         txtReady.classList.add('rubberBand')
+
+        const body = document.getElementsByTagName('body')[0]
+        body.classList.remove('activity')
+        body.classList.remove('interval')
 
         const pauseBtn = document.getElementById('pause-btn')
         const resetBtn = document.getElementById('reset-btn')
@@ -414,8 +404,6 @@ class SubTimer {
         }
 
         this.timer.update()
-
-       
         
         // カウントが0になったらTimerに通知する。カウントを戻す。
         if (this.currentTime <= 0) {
@@ -490,11 +478,9 @@ const main = () => {
     const progressBar = document.getElementById('total-progress')
     const progressCurrentTime = document.getElementById('current-time')
     const progressTotalTime = document.getElementById('total-time')
-    
-    // #setting-info内のdt, dd
-    const dtAtcivity = document.getElementById('activity-label')
+
+    // #setting-info内のdd
     const ddActivityTime = document.getElementById('activity-time')
-    const dtInterval = document.getElementById('interval-label')
     const ddIntervalTime = document.getElementById('interval-time')
     const ddSetCount = document.getElementById('set-count')
     
@@ -581,22 +567,11 @@ const main = () => {
     const readyLabel = new ReadyLabel (txtReady)
     const activityLabel = new TimeLabel (txtActivity) 
     const intrvalLabel = new TimeLabel (txtInterval)
-    
-
-    // StyleLabelを用意する
-    const dtActivityLabel = new StyleLabel (dtAtcivity)
-    const ddActivityLabel = new StyleLabel (ddActivityTime)
-    const dtIntervalLabel = new StyleLabel (dtInterval)
-    const ddIntervalLabel = new StyleLabel (ddIntervalTime)
 
     // SubTimerにObserverを追加する
     readyTimer.addLabel(readyLabel)
     activityTimer.addLabel(activityLabel)
-    activityTimer.addLabel(dtActivityLabel)
-    activityTimer.addLabel(ddActivityLabel)
     intervalTimer.addLabel(intrvalLabel)
-    intervalTimer.addLabel(dtIntervalLabel)
-    intervalTimer.addLabel(ddIntervalLabel)
     if (useSound) {
         const soundPlayer = new SoundPlayer ()
         readyTimer.addSoundPlayer(soundPlayer)
@@ -640,7 +615,7 @@ const main = () => {
         progressTotalTime.textContent = totalTimeLabel
         ddActivityTime.textContent = activityTimeLabel
         ddIntervalTime.textContent = intervalTimeLabel
-        ddSetCount.textContent = `0/${setNumber}`
+        ddSetCount.textContent = `0 /${setNumber}`
 
         txtReady.textContent = 'Ready'
         txtActivity.textContent = activityTimeLabel
@@ -652,12 +627,6 @@ const main = () => {
         txtReady.classList.remove('ready-count')
         txtActivity.classList.add('invisible')
         txtInterval.classList.add('invisible')
-
-        dtAtcivity.classList.add('disabled')
-        ddActivityTime.classList.add('disabled')
-        dtInterval.classList.add('disabled')
-        ddIntervalTime.classList.add('disabled')
-
         
         
         disableBtn (pauseBtn)

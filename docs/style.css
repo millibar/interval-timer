@@ -20,6 +20,12 @@ body {
     background: #fff;
 }
 
+/*
+* {
+    -webkit-user-select: none;
+}
+*/
+
 #to-setting {
     height: 4vh;
     width: 4vh;
@@ -124,7 +130,7 @@ h1 {
 
 #progress progress {
     width: calc(100% - 6em);
-    height: 40%;
+    height: 35%;
     background-color: #eee;
     border: 1px solid #ddd;
     border-radius: 6px;
@@ -178,24 +184,35 @@ h1 {
     padding: 0;
 }
 
+body.activity #activity-label,
+body.activity #activity-time,
+body.interval #interval-label,
+body.interval #interval-time {
+    color: #000;
+}
+
 #activity-label {
     grid-area: label11;
     text-align: left;
+    color: #c8c8c8;
 }
 
 #activity-time {
     grid-area: value11;
     text-align: left;
+    color: #c8c8c8;
 }
 
 #interval-label {
     grid-area: label21;
     text-align: left;
+    color: #c8c8c8;
 }
 
 #interval-time {
     grid-area: value21;
     text-align: left;
+    color: #c8c8c8;
 }
 
 #set-label {
@@ -277,13 +294,8 @@ canvas {
     transform: rotateX(180deg);
 }
 
-.set-up { /* セット数が増加するタイミングで#set-count要素にtoggleされる */
-    transform: rotateX(360deg);
-}
-
-#set-count {
-    transition-property: transform;
-    transition-duration: 0.3s;
+#set-count::first-letter {
+    font-size: 2rem;
 }
 
 .ready-count { /* readyTimerの更新ごとに#ready要素にaddされる */
