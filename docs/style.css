@@ -548,33 +548,23 @@ body#setting {
 }
 
 li.checkbox {
-    display: flex;
-    justify-content: space-between;
-}
-
-li.checkbox span {
     position: relative;
 }
 
 li.checkbox label {
     display: block;
-    width: calc(100% - 3rem);
+    position: absolute;
+    width: auto;
+    top: 0;
+    left: 1rem;
+    right: 1rem;
 }
 
 input[type="checkbox"] {
-    /* チェックボックスを擬似要素に重ねて隠す。微妙な位置決めが必要 */
-    width: 2.8rem;
-    height: 1rem;
-    line-height: 1rem;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    margin: auto;
-    z-index: 0; 
+    visibility: hidden;
 }
 
-input[type="checkbox"]::before {/* トグルスイッチの背景部分 */
+input[type="checkbox"] + label::before { /* トグルスイッチの背景部分 */
     content: "";
     display: block;
     width: 2.8rem;
@@ -583,7 +573,7 @@ input[type="checkbox"]::before {/* トグルスイッチの背景部分 */
     border-radius: 0.8rem;
     position: absolute;
     top: 0;
-    left: 0;
+    left: auto;
     bottom: 0;
     right: 0;
     margin: auto;
@@ -594,7 +584,7 @@ input[type="checkbox"]::before {/* トグルスイッチの背景部分 */
     transition-timing-function: ease-in-out;
 }
 
-input[type="checkbox"]::after { /* トグルスイッチの丸い部分 */
+input[type="checkbox"] + label::after {/* トグルスイッチの丸い部分 */
     content: "";
     display: block;
     width: 1.5rem;
@@ -605,22 +595,22 @@ input[type="checkbox"]::after { /* トグルスイッチの丸い部分 */
     top: 0;
     left: auto;
     bottom: 0;
-    right: 0.15rem;
+    right: 0;
     margin: auto;
     z-index: 10;
     box-shadow: 1px 1px 1px 0px #bbb;
     transition-property: transform;
     transition-duration: 0.2s;
     transition-timing-function: ease-in-out;
-    transform: translateX(-1.1rem);
+    transform: translateX(-1.3rem); /* 2.8 - 1.5 */
 }
 
-input[type="checkbox"]:checked::before {
+input[type="checkbox"]:checked + label::before {
     background: #62ea70;
 }
 
-input[type="checkbox"]:checked::after {
-    transform: translateX(0.1rem);
+input[type="checkbox"]:checked + label::after {
+    transform: translateX(0);
 }
 
 /* ロールピッカー */
