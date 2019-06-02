@@ -134,7 +134,7 @@ h1 {
 }
 
 #progress progress {
-    width: calc(100% - 7em);
+    width: calc(100% - 6.4em);
     height: 35%;
     background-color: #eee;
     border: 1px solid #ddd;
@@ -157,7 +157,7 @@ h1 {
 }
 
 #progress span {
-    width: 3.5em;
+    width: 3.2em;
 }
 
 #current-time {
@@ -176,7 +176,7 @@ h1 {
     box-sizing: border-box;
     display: grid;
     grid-template-rows: 1fr 1fr;
-    grid-template-columns: 4.5em 4.5em 1fr 2.5em 3.5em;
+    grid-template-columns: 4.5em 4.5em 1fr 2.5em 3.2em;
     grid-template-areas:
         "label11 value11 . set-label set-value"
         "label21 value21 . set-label set-value";
