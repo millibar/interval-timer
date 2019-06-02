@@ -67,7 +67,7 @@ h1 {
 }
 
 #buttons {
-    height: 27vh;
+    /*height: 27vh;*/
     box-sizing: border-box;
     /*background: #fcf;*/
 }
@@ -285,8 +285,9 @@ canvas {
     transform: rotateX(180deg);
 }
 
-#set-count::first-letter {
+#set-count .done {
     font-size: 2rem;
+    margin-right: 2px;
 }
 
 .ready-count { /* readyTimerの更新ごとに#ready要素にaddされる */
@@ -402,8 +403,6 @@ button {
     box-shadow: 0 1px 2px 1px #eee;
     transition-property: box-shadow, background-image;
     transition-duration: 1s;
-    position:relative;
-    top: -0.6rem;
 }
 
 #butInstall {

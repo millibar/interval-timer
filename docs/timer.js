@@ -22,7 +22,7 @@ class SetLabel {
         this.element = element
     }
     update (timer) {
-        this.element.textContent = `${timer.currentSetNumber} /${timer.setNumber}`
+        this.element.textContent = `${timer.currentSetNumber}`
     }
 }
 
@@ -275,6 +275,9 @@ class Timer {
     update () {
         if (this.index > 0) { // readyのときはなにもしない
             this.lapsedTime_ms = performance.now() - this.startTime
+            if (this.lapsedTime_ms > this.totalTime * 1000) { // バックグラウンドで時間経過した場合用
+                this.lapsedTime_ms = this.totalTime * 1000
+            }
 
             const currentTime_ms = this.lapsedTime_ms
             const fraction_ms = currentTime_ms - this.currentTime * 1000
@@ -482,7 +485,8 @@ const main = () => {
     // #setting-info内のdd
     const ddActivityTime = document.getElementById('activity-time')
     const ddIntervalTime = document.getElementById('interval-time')
-    const ddSetCount = document.getElementById('set-count')
+    const doneSet = document.querySelector('#set-count .done')
+    const totalSet = document.querySelector('#set-count .total')
     
     // #count-down内のspan
     const txtReady = document.getElementById('ready')
@@ -491,8 +495,8 @@ const main = () => {
 
     const resizeCanvas = () =>{
         let maxWidth = Math.min(indicator.clientWidth, indicator.clientHeight)
-        canvas.width = maxWidth //* devicePixelRatio
-        canvas.height = maxWidth//* devicePixelRatio
+        canvas.width = maxWidth
+        canvas.height = maxWidth
     }
     resizeCanvas ()
 
@@ -563,7 +567,7 @@ const main = () => {
     // TimeLabel, SetLabel, ReadyLabelを用意する
     const progressLabel = new ProgressLabel (progressBar)
     const currentTimeLabel = new TimeLabel (progressCurrentTime)
-    const setLabel = new SetLabel (ddSetCount)
+    const setLabel = new SetLabel (doneSet)
     const readyLabel = new ReadyLabel (txtReady)
     const activityLabel = new TimeLabel (txtActivity) 
     const intrvalLabel = new TimeLabel (txtInterval)
@@ -615,7 +619,7 @@ const main = () => {
         progressTotalTime.textContent = totalTimeLabel
         ddActivityTime.textContent = activityTimeLabel
         ddIntervalTime.textContent = intervalTimeLabel
-        ddSetCount.textContent = `0 /${setNumber}`
+        totalSet.textContent = `${setNumber}`
 
         txtReady.textContent = 'Ready'
         txtActivity.textContent = activityTimeLabel
