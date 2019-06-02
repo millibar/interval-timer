@@ -68,6 +68,8 @@ h1 {
 
 #buttons {
     /*height: 27vh;*/
+    position: relative;
+    top:1rem;
     box-sizing: border-box;
     /*background: #fcf;*/
 }
