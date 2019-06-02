@@ -15,6 +15,7 @@ body {
     padding: 0;
     height: 100%;
     max-width: 100vh;
+    min-width: 15rem;
     min-height: 500px;
     position: relative;
     background: #fff;
@@ -129,7 +130,7 @@ h1 {
 }
 
 #progress progress {
-    width: calc(100% - 6em);
+    width: calc(100% - 7em);
     height: 35%;
     background-color: #eee;
     border: 1px solid #ddd;
@@ -152,7 +153,7 @@ h1 {
 }
 
 #progress span {
-    width: 3em;
+    width: 3.5em;
 }
 
 #current-time {
@@ -171,7 +172,7 @@ h1 {
     box-sizing: border-box;
     display: grid;
     grid-template-rows: 1fr 1fr;
-    grid-template-columns: 4.5em 4.5em 1fr 2.5em 3em;
+    grid-template-columns: 4.5em 4.5em 1fr 2.5em 3.5em;
     grid-template-areas:
         "label11 value11 . set-label set-value"
         "label21 value21 . set-label set-value";
@@ -225,10 +226,6 @@ body.interval #interval-time {
     text-align: right;
 }
 
-
-
-
-
 #indicator {
     position: relative;
     width: 100%;
@@ -271,16 +268,6 @@ canvas {
     -webkit-backface-visibility: hidden;
     background:#fff;
 }
-
-/*
-#ready {
-    
-}
-
-#activity {
-    
-}
-*/
 
 #interval { /* #activityの裏側にする */
     transform: rotateX(180deg);
@@ -393,8 +380,6 @@ https://daneden.github.io/animate.css/
 #buttons {
     margin: 0 auto;
     padding: 0;
-    position: absolute;
-    bottom: 0;
     width: 100%;
     max-width: 50vh;
     left: 0;
@@ -468,6 +453,7 @@ button.disabled {
 }
 
 
+/* Setting */
 body#setting {
     background: #efefef;
     animation-name: appear;
@@ -486,150 +472,80 @@ body#setting {
     }
 }
 
+
 #user-setting {
     margin: 1rem 0 0;
     padding: 0;
-    display: grid;
-    grid-template-rows: 1fr;
-    grid-template-columns: 1fr 5rem;
-    grid-template-areas:
-        "total    tVal"
-        "activity aVal"
-        "aRange   aRange"
-        "interval iVal"
-        "iRange   iRange"
-        "set      sVal"
-        "sRange   sRange"
-        "include  iCheck"
-        "sound    sCheck";
-    
+    list-style: none;
 }
 
-#user-setting dt,
-#user-setting dd {
+#user-setting > li {
     margin: 0;
-    padding: 1px 0.5rem 0;
-    line-height: 2.5rem;
+    padding: 0 1rem;
+    line-height: 2.8rem;
+    border-bottom: 1px solid #ccc;
     background: #fff;
-    /*outline: 1px solid gray;*/
 }
 
-#user-setting >:nth-child(1) {
-    grid-area: total;
-    background: transparent;
-}
-
-#user-setting >:nth-child(2) {
-    grid-area: tVal;
-    text-align: right;
-    background: transparent;
-}
-
-#user-setting >:nth-child(3) {
-    grid-area: activity ;
-    line-height: 1.5rem;
-    padding: 0.8rem 0.5rem 0;
-}
-
-#user-setting >:nth-child(4) {
-    grid-area: aVal;
-    text-align: right;
-    line-height: 1.5rem;
-    padding: 0.8rem 0.5rem 0;
-}
-
-#user-setting >:nth-child(5) {
-    grid-area: aRange;
-    line-height: 1rem;
-    text-align: left;
-}
-
-#user-setting >:nth-child(5) label,
-#user-setting >:nth-child(8) label,
-#user-setting >:nth-child(11) label {
+#user-setting li#setting-total {
     display: flex;
-    justify-content: space-between; 
-    align-items: center;
-    color: #999;
+    justify-content: space-between;
+    background: transparent;
+    border-bottom: none;
 }
 
-#user-setting >:nth-child(6) {
-    grid-area: interval;
-    border-top: 1px solid #ddd;
-    line-height: 1.5rem;
-    padding: 0.8rem 0.5rem 0;
+#user-setting li#setting-set {
+    margin-bottom: 3rem;
 }
 
-#user-setting >:nth-child(7) {
-    grid-area: iVal;
-    border-top: 1px solid #ddd;
-    text-align: right;
-    line-height: 1.5rem;
-    padding: 0.8rem 0.5rem 0;
-}
-
-#user-setting >:nth-child(8) {
-    grid-area: iRange;
-    line-height: 1rem;
-    text-align: left;
-}
-
-#user-setting >:nth-child(9) {
-    grid-area: set;
-    border-top: 1px solid #ddd;
-    line-height: 1.5rem;
-    padding: 0.8rem 0.5rem 0;
-}
-
-#user-setting >:nth-child(10) {
-    grid-area: sVal;
-    border-top: 1px solid #ddd;
-    text-align: right;
-    line-height: 1.5rem;
-    padding: 0.8rem 0.5rem 0;
-}
-
-#user-setting >:nth-child(11) {
-    grid-area: sRange;
-    line-height: 1rem;
-    text-align: left;
-}
-
-#user-setting >:nth-child(12) {
-    grid-area: include;
-    margin: 2rem 0 0;
-}
-
-#user-setting >:nth-child(13) {
-    grid-area: iCheck;
-    position: relative;
-    margin: 2rem 0 0;
-}
-
-#user-setting >:nth-child(14) {
-    grid-area: sound;
-    border-top: 1px solid #ddd;
-}
-
-#user-setting >:nth-child(15) {
-    grid-area: sCheck;
-    border-top: 1px solid #ddd;
+#user-setting details {
+    height: 2.8rem;
+    transition: 0.3s;
+    margin: 0;
+    padding: 0;
     position: relative;
 }
 
-#setting-activity-min,
-#setting-activity-sec,
-#setting-interval-min,
-#setting-interval-sec,
-#setting-set {
-    width: calc(100% - 3.5rem);
-    margin: 0 0 0 1rem;
-    padding: 0.5rem 0;
-    
+#user-setting details[open] {
+    height: 12.8rem;
 }
 
-label {
+#user-setting details div {
+    opacity: 0;
+    transition: 1s;
+}
+
+#user-setting details[open] div {
+    opacity: 1;
+}
+
+#user-setting summary {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    outline: none;
+}
+
+#user-setting summary::-webkit-details-marker {
+    display: none;
+}
+
+#user-setting summary .value {
+    color: #666;
+}
+
+li.checkbox {
+    display: flex;
+    justify-content: space-between;
+}
+
+li.checkbox span {
+    position: relative;
+}
+
+li.checkbox label {
     display: block;
+    width: calc(100% - 3rem);
 }
 
 input[type="checkbox"] {
@@ -645,7 +561,7 @@ input[type="checkbox"] {
     z-index: 0; 
 }
 
-input[type="checkbox"]::before {
+input[type="checkbox"]::before {/* トグルスイッチの背景部分 */
     content: "";
     display: block;
     width: 2.8rem;
@@ -656,8 +572,8 @@ input[type="checkbox"]::before {
     top: 0;
     left: 0;
     bottom: 0;
-    right: 0.5rem;
-    margin: auto 0 auto auto;
+    right: 0;
+    margin: auto;
     z-index: 1;
     box-shadow: 1px 1px 1px 0px #bbb inset;
     transition-property: background-color;
@@ -665,7 +581,7 @@ input[type="checkbox"]::before {
     transition-timing-function: ease-in-out;
 }
 
-input[type="checkbox"]::after {
+input[type="checkbox"]::after { /* トグルスイッチの丸い部分 */
     content: "";
     display: block;
     width: 1.5rem;
@@ -674,17 +590,16 @@ input[type="checkbox"]::after {
     background: #fff;
     position: absolute;
     top: 0;
-    left: 0;
+    left: auto;
     bottom: 0;
-    right: 0.65rem;
-    margin: auto 0 auto auto;
+    right: 0.2rem;
+    margin: auto;
     z-index: 10;
     box-shadow: 1px 1px 1px 0px #bbb;
     transition-property: transform;
     transition-duration: 0.2s;
     transition-timing-function: ease-in-out;
     transform: translateX(-1.1rem);
-
 }
 
 input[type="checkbox"]:checked::before {
@@ -695,3 +610,97 @@ input[type="checkbox"]:checked::after {
     transform: translateX(0.05rem);
 }
 
+/* ロールピッカー */
+.picker {
+    position: absolute;
+    overflow: hidden;
+    height: 10rem; /* widthは個別に指定する */
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+#picker-activity-min,
+#picker-interval-min {
+    width: 6rem;
+    left: -6rem;
+    right: 0;
+}
+
+#picker-activity-sec,
+#picker-interval-sec {
+    width: 6rem;
+    left: 0;
+    right: -6rem;
+}
+
+#picker-set {
+    width: 12rem;
+}
+
+.picker ul {
+    width: 100%;
+    margin: 0;
+    padding: 4rem 0 0;
+    list-style: none;
+    transition-property: transform;
+    transition-duration: 0.2s;
+}
+
+.picker li {
+    width: 100%;
+    height: 2rem;
+    line-height: 2rem;
+    font-size: 1.2rem;
+    text-align: center;
+    box-sizing: border-box;
+    color: #666;
+    margin: 0;
+    padding: 0;
+}
+
+.picker li.current {
+    height: 3rem;
+    line-height: 3rem;
+    font-size: 1.5rem;
+    color:#000;
+}
+
+.picker li.two-before,
+.picker li.two-after {
+    height: 1.5rem;
+    line-height: 1.5rem;
+    font-size: 1rem;
+    color: #aaa;
+}
+
+.picker li.two-before {
+    transform: rotateX(40deg);
+}
+
+.picker li.two-after {
+    transform: rotateX(-40deg);
+}
+
+.picker.min::before,
+.picker.sec::before {
+    width: 2rem;
+    height: 3rem;
+    font-size: 1rem;
+    line-height: 3rem;
+    text-align: right;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: auto;
+    margin: auto;
+    color: #666;
+}
+.picker.min::before {
+    content: "min";
+}
+
+.picker.sec::before {
+    content: "sec";
+}
