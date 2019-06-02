@@ -528,9 +528,7 @@ body#setting {
 
 #user-setting summary span {
     display: block;
-    font-style: italic;
 }
-
 
 #user-setting summary::-webkit-details-marker {
     display: none;
@@ -556,7 +554,7 @@ li.checkbox label {
 
 input[type="checkbox"] {
     /* チェックボックスを擬似要素に重ねて隠す。微妙な位置決めが必要 */
-    width: 3rem;
+    width: 2.8rem;
     height: 1rem;
     line-height: 1rem;
     position: absolute;
@@ -598,7 +596,7 @@ input[type="checkbox"]::after { /* トグルスイッチの丸い部分 */
     top: 0;
     left: auto;
     bottom: 0;
-    right: 0.2rem;
+    right: 0.15rem;
     margin: auto;
     z-index: 10;
     box-shadow: 1px 1px 1px 0px #bbb;
@@ -613,7 +611,7 @@ input[type="checkbox"]:checked::before {
 }
 
 input[type="checkbox"]:checked::after {
-    transform: translateX(0.05rem);
+    transform: translateX(0.1rem);
 }
 
 /* ロールピッカー */
