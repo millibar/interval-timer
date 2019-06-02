@@ -21,6 +21,10 @@ body {
     background: #fff;
 }
 
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
 /*
 * {
     -webkit-user-select: none;
@@ -471,6 +475,7 @@ body#setting {
         transform: translateX(0);
     }
 }
+
 
 
 #user-setting {
