@@ -526,6 +526,11 @@ body#setting {
     outline: none;
 }
 
+#user-setting summary span {
+    display: block;
+}
+
+
 #user-setting summary::-webkit-details-marker {
     display: none;
 }
