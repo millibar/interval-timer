@@ -521,13 +521,22 @@ body#setting {
 
 #user-setting summary {
     list-style: none;
+    height: 2.8rem;
+    /* Safariはsummaryにflexboxでレイアウトできないのでfloatでやる
     display: flex;
     justify-content: space-between;
+    */
     outline: none;
 }
 
-#user-setting summary span {
+#user-setting summary span.label {
     display: block;
+    float: left;
+}
+
+#user-setting summary span.value {
+    display: block;
+    float: right;
 }
 
 #user-setting summary::-webkit-details-marker {
