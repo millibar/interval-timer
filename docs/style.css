@@ -528,6 +528,7 @@ body#setting {
 
 #user-setting summary span {
     display: block;
+    font-style: italic;
 }
 
 
