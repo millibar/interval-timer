@@ -21,7 +21,7 @@ body {
     background: #fff;
 }
 
-a, button, summary {
+a, button, input, summary {
     -webkit-tap-highlight-color: transparent;
 }
 
