@@ -215,9 +215,13 @@ const main = () => {
 
     // ローカルストレージの値を読み込む。値がなければデフォルト値
     let activityTime = Number(storage.getItem('activityTime')) || 20
-    let intervalTime = Number(storage.getItem('intervalTime')) || 10
     let setNumber = Number(storage.getItem('setNumber')) || 8
 
+    let intervalTime = Number(storage.getItem('intervalTime'))
+    if (intervalTime === undefined) {
+        intervalTime = 10
+    }
+    
     let hasLastInterval = storage.getItem('hasLastInterval')
     if (hasLastInterval === undefined) {
         hasLastInterval = inputLastInterval.checked
@@ -245,7 +249,7 @@ const main = () => {
     let interval_sec = intervalTime % 60
     let interval_min = (intervalTime - interval_sec) / 60
 
-    // ユーザーの入力値を画面に反映し、ローカルストレージに仮設定する
+    // ユーザーの入力値を画面に反映し、ローカルストレージに保存する
     const update = () => {
         activity_min = activityPicker_min.get()
         activity_sec = activityPicker_sec.get()
@@ -276,6 +280,8 @@ const main = () => {
         let totalTime = activityTime * setNumber + intervalTime * (setNumber - 1)
         if (hasLastInterval) totalTime += intervalTime
         totalTimeLabel.textContent = secToTimeLabel (totalTime)
+
+        storage.save()
     }
 
     // Setピッカーを追加
@@ -330,12 +336,6 @@ const main = () => {
 
     update ()
 
-    // ページを離れるときにstorageの仮設定を保存する
-    const saveSetting = () => {
-        storage.save()
-    }
-
-    window.addEventListener('beforeunload', saveSetting, false)
 }
 
 window.addEventListener('load', main, false)
