@@ -491,6 +491,7 @@ body#setting {
     line-height: 2.8rem;
     border-bottom: 1px solid #ccc;
     background: #fff;
+    clear:both;
 }
 
 #user-setting li#setting-total {
