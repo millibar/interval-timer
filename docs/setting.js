@@ -217,10 +217,8 @@ const main = () => {
     let activityTime = Number(storage.getItem('activityTime')) || 20
     let setNumber = Number(storage.getItem('setNumber')) || 8
 
-    let intervalTime = Number(storage.getItem('intervalTime'))
-    if (intervalTime === undefined) {
-        intervalTime = 10
-    }
+    let intervalTime = Number(storage.getItem('intervalTime')) || 10
+    
     
     let hasLastInterval = storage.getItem('hasLastInterval')
     if (hasLastInterval === undefined) {
