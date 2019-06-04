@@ -214,9 +214,11 @@ const main = () => {
 
 
     // ローカルストレージの値を読み込む。値がなければデフォルト値
-    let activityTime = Number(storage.getItem('activityTime')) || 20
-    let setNumber = Number(storage.getItem('setNumber')) || 8
+    let activityTime = storage.getItem('activityTime') || 20
+    let setNumber = storage.getItem('setNumber') || 8
 
+    // intervalTimeには0が保存されることがある。↑の方法では0はfalseなので読み込めない
+    // また、undefinedのときNumberでキャストするとNaNになるのでNumberはつけてはいけない
     let intervalTime = storage.getItem('intervalTime')
     if (intervalTime === undefined) {
         intervalTime = 10
