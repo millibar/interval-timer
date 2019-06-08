@@ -140,9 +140,7 @@ class Timer {
         this.labels = []     // TimeLabel, SetLabelを入れる。
         this.progressBar = null
 
-        this.startTime = 0
         this.lapsedTime_ms = 0 // startしてからの経過時間
-        this.timeOffset = 0 // pauseしたときの時刻を保持しておく
     }
 
     addSubtimer (subtimer) {
@@ -158,39 +156,24 @@ class Timer {
         observers.forEach (observer => observer.update(this)) 
     }
 
-    // タイマーを開始する。pause()が呼ばれると、タイマーは一時停止する。
+    // startBtnから呼ばれる
     start () {
         this.subtimers[this.index].start()
-
-        if (this.index > 0) { // readyのときはlapsedTimeを進めない
-            const pausedTime = this.timeOffset
-            const timeSincePause = performance.now() - pausedTime
-            this.timeOffset = 0
-            this.startTime = timeSincePause
-        }
     }
 
-    // pauseBtnから呼ばれる。start()したタイマーを一時停止する。
+    // pauseBtnから呼ばれる
     pause () {
         this.subtimers[this.index].pause()
-
-        if (this.index > 0) {
-            const pausedTime = performance.now() - this.startTime
-            this.timeOffset = pausedTime
-        }
     }
 
-    // resetBtnから呼ばれる。
+    // resetBtnから呼ばれる
     reset () {
         this.subtimers[this.index].reset()
         this.currentTime = 0
         this.currentSetNumber = 0
         this.index = 0
-        this.notify(this.labels)
-
-        this.startTime = 0
         this.lapsedTime_ms = 0
-        this.timeOffset = 0
+        this.notify(this.labels)
     }
 
     // SubTimerのカウントが0になったときに呼ばれる
@@ -202,7 +185,6 @@ class Timer {
                 // readyLabelを隠す
                 subtimer.labels[0].element.classList.add('invisible')
                 body.classList.add('activity')
-                this.startTime = performance.now() // ここから経過時間を計測し始める
                 break
             case 'activity':
                 this.currentSetNumber += 1
@@ -274,21 +256,21 @@ class Timer {
     // SubTimerから呼ばれる
     update () {
         if (this.index > 0) { // readyのときはなにもしない
-            this.lapsedTime_ms = performance.now() - this.startTime
-            if (this.lapsedTime_ms > this.totalTime * 1000) { // バックグラウンドで時間経過した場合用
-                this.lapsedTime_ms = this.totalTime * 1000
+            let lapsedTime = 0
+
+            for (let i = 1, len = this.index; i < len; i++) { // 完了済みの秒
+               lapsedTime += this.subtimers[i].totalTime
             }
 
-            const currentTime_ms = this.lapsedTime_ms
-            const fraction_ms = currentTime_ms - this.currentTime * 1000
-            if (fraction_ms >= 1000) { // 1秒ごとに更新する。こうしないとSubTimerのカウントとのずれが目視でわかる
-                this.currentTime = Math.round(this.lapsedTime_ms/1000)
-            }
+            let thislap_ms = this.subtimers[this.index].lapsedTime_ms // 進行中のミリ秒
+
+            this.lapsedTime_ms = lapsedTime * 1000 + thislap_ms
+            this.currentTime = lapsedTime + Math.floor(thislap_ms/1000)
 
             this.notify(this.labels)
         }
     }
-} 
+}
 
 /**
  * ObserverパターンのSubject役。requestAnimationFrameごとに更新される。
