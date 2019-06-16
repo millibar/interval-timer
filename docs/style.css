@@ -269,7 +269,7 @@ canvas {
     width: 100%;
     height: 100%;
     position: absolute;
-    
+
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     background:#fff;
@@ -297,7 +297,7 @@ canvas {
 }
 
 
-/* 完了時に#ready要素に追加される 
+/* 完了時に#ready要素に追加される
 https://daneden.github.io/animate.css/
 */
 @-webkit-keyframes rubberBand {
@@ -305,38 +305,38 @@ https://daneden.github.io/animate.css/
       -webkit-transform: scale3d(1, 1, 1);
       transform: scale3d(1, 1, 1);
     }
-  
+
     30% {
       -webkit-transform: scale3d(1.25, 0.75, 1);
       transform: scale3d(1.25, 0.75, 1);
     }
-  
+
     40% {
       -webkit-transform: scale3d(0.75, 1.25, 1);
       transform: scale3d(0.75, 1.25, 1);
     }
-  
+
     50% {
       -webkit-transform: scale3d(1.15, 0.85, 1);
       transform: scale3d(1.15, 0.85, 1);
     }
-  
+
     65% {
       -webkit-transform: scale3d(0.95, 1.05, 1);
       transform: scale3d(0.95, 1.05, 1);
     }
-  
+
     75% {
       -webkit-transform: scale3d(1.05, 0.95, 1);
       transform: scale3d(1.05, 0.95, 1);
     }
-  
+
     to {
       -webkit-transform: scale3d(1, 1, 1);
       transform: scale3d(1, 1, 1);
     }
 }
-  
+
 @keyframes rubberBand {
   from {
     -webkit-transform: scale3d(1, 1, 1);
@@ -686,7 +686,6 @@ input[type="checkbox"]:checked + label::after {
 .picker.sec::before {
     width: 2em;
     height: 2em;
-    font-size: 0.8em;
     line-height: 2em;
     text-align: right;
     position: absolute;
@@ -697,6 +696,7 @@ input[type="checkbox"]:checked + label::after {
     margin: auto;
     color: #333;
     z-index: 10;
+    transform: translateZ(4em); /* 各liが3emほど手前に来ているため */
 }
 .picker.min::before {
     content: "min";
