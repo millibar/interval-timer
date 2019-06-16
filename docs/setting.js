@@ -18,9 +18,11 @@ const main = () => {
     const activitySummary = document.querySelector('#setting-activity summary')
     activitySummary.addEventListener('click', (event) => {
         intervalDetail.removeAttribute('open')
-        setDetail.removeAttribute('open')
 
-        activityDetail.classList.toggle('open')
+        setDetail.removeAttribute('open')       
+        setTimeout(_ => {
+            activityDetail.classList.toggle('open')
+        }, 100)
         intervalDetail.classList.remove('open')
         setDetail.classList.remove('open')
     }, false)
@@ -30,7 +32,9 @@ const main = () => {
         activityDetail.removeAttribute('open')
         setDetail.removeAttribute('open')
 
-        intervalDetail.classList.toggle('open')
+        setTimeout(_ =>{
+            intervalDetail.classList.toggle('open')
+        }, 100)
         activityDetail.classList.remove('open')
         setDetail.classList.remove('open')
     }, false)
@@ -40,7 +44,9 @@ const main = () => {
         activityDetail.removeAttribute('open')
         intervalDetail.removeAttribute('open')
 
-        setDetail.classList.toggle('open')
+        setTimeout(_ => {
+            setDetail.classList.toggle('open')
+        }, 100)
         activityDetail.classList.remove('open')
         intervalDetail.classList.remove('open')
     }, false)
