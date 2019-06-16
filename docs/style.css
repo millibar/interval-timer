@@ -507,13 +507,13 @@ body#setting {
 
 #user-setting details {
     height: 2.8rem;
-    transition: 0.3s;
+    transition: height 0.2s;
     margin: 0;
     padding: 0;
     position: relative;
 }
 
-#user-setting details[open] {
+#user-setting details.open {
     height: 12.8rem;
 }
 
@@ -522,7 +522,7 @@ body#setting {
     transition: 1s;
 }
 
-#user-setting details[open] div {
+#user-setting details.open div {
     opacity: 1;
 }
 
@@ -605,7 +605,7 @@ input[type="checkbox"] + label::after {/* トグルスイッチの丸い部分 *
     right: 0;
     margin: auto;
     z-index: 10;
-    box-shadow: 1px 1px 1px 0px #bbb;
+    box-shadow: 1px 1px 1px 1px #bbb;
     transition-property: transform;
     transition-duration: 0.2s;
     transition-timing-function: ease-in-out;
@@ -622,87 +622,72 @@ input[type="checkbox"]:checked + label::after {
 
 /* ロールピッカー */
 .picker {
-    position: absolute;
-    overflow: hidden;
-    height: 10rem; /* widthは個別に指定する */
-    left: 0;
-    right: 0;
-    margin: auto;
+    position: relative;
+    font-size: 1.25rem; /* ここでサイズを決める */
+    height: 8em; /* widthは個別に決める */
 }
 
 #picker-activity-min,
 #picker-interval-min {
-    width: 6rem;
-    left: -6rem;
-    right: 0;
+    width: 6em;
+    position: absolute;
+    left: -6em;
+    right:0;
+    margin: auto;
+    top: 1.7em;
 }
 
 #picker-activity-sec,
 #picker-interval-sec {
-    width: 6rem;
+    width: 6em;
+    position: absolute;
     left: 0;
-    right: -6rem;
+    right:-6em;
+    margin: auto;
+    top: 1.7em;
 }
 
 #picker-set {
-    width: 12rem;
+    width: 12em;
+    top: -0.5em;
+    margin: auto;
 }
 
 .picker ul {
-    width: 100%;
-    margin: 0;
+    margin: auto;
     padding: 0;
     list-style: none;
-    transition-property: transform;
-    /* transformとdurationはスクリプトで変化させる */
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    height: 2em;
+    width: 100%;
 }
 
 .picker li {
-    width: 100%;
-    height: 2rem;
-    line-height: 2rem;
-    text-align: center;
     margin: 0;
     padding: 0;
-    font-size: 1.1rem;
-    color:#999;
-}
-
-.picker .v- {
-    visibility: hidden;
-}
-
-.picker .prev2 {
-    transform: rotateX(40deg);
-}
-
-.picker .prev1 {
-    font-size: 1.2rem;
-    color:#666;
-    transform: rotateX(20deg) translateY(-0.15rem);
+    line-height: 2em;
+    height: 2em;
+    width: 100%;
+    position: absolute;
+    color: #666;
+    background: #fff;
+    text-align: center;
 }
 
 .picker .current {
-    font-size: 1.3rem;
-    color:#000;
-}
-
-.picker .next1 {
-    font-size: 1.2rem;
-    color:#666;
-    transform: rotateX(-20deg) translateY(0.15rem);
-}
-
-.picker .next2 {
-    transform: rotateX(-40deg);
+    color: #000;
 }
 
 .picker.min::before,
 .picker.sec::before {
-    width: 2rem;
-    height: 3rem;
-    font-size: 1rem;
-    line-height: 3rem;
+    width: 2em;
+    height: 2em;
+    font-size: 0.8em;
+    line-height: 2em;
     text-align: right;
     position: absolute;
     top: 0;
@@ -710,7 +695,8 @@ input[type="checkbox"]:checked + label::after {
     right: 0;
     left: auto;
     margin: auto;
-    color: #666;
+    color: #333;
+    z-index: 10;
 }
 .picker.min::before {
     content: "min";
