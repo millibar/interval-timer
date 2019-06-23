@@ -68,13 +68,9 @@ h1 {
 
 #buttons {
     /*height: 27vh;*/
-    position: relative;
-    top:1rem;
     box-sizing: border-box;
     /*background: #fcf;*/
 }
-
-
 
 h1 {
     margin: 0;
@@ -114,7 +110,7 @@ h1 {
     z-index: 2;
     top: 0;
     left: 5px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
 }
 
 #to-timer a {
@@ -388,9 +384,7 @@ https://daneden.github.io/animate.css/
     margin: 0 auto;
     padding: 0;
     width: 100%;
-    max-width: 50vh;
-    left: 0;
-    right: 0;
+    max-width: 100vmax;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -433,23 +427,41 @@ button.disabled {
 
 #start-btn {
     order: 2;
-    width: 18vh;
+    /*width: 18vh;
     height: 18vh;
-    font-size: 3.8vh;
+    font-size: 3.8vh;*/
+    width: 35vmin;
+    height: 35vmin;
+    font-size: 6vmin;
+    max-width: 27vh;
+    max-height: 27vh;
+    
 }
 
 #pause-btn {
     order: 3;
-    width: 12vh;
+    /*width: 12vh;
     height: 12vh;
-    font-size: 2vh;
+    font-size: 2vh;*/
+    width: 25vmin;
+    height: 25vmin;
+    font-size: 4vmin;
+    max-width: 20vh;
+    max-height: 20vh;
+    margin-right: 1vmin;
 }
 
 #reset-btn {
     order: 1;
-    width: 12vh;
+    /*width: 12vh;
     height: 12vh;
-    font-size: 2vh;
+    font-size: 2vh;*/
+    width: 25vmin;
+    height: 25vmin;
+    font-size: 4vmin;
+    max-width: 20vh;
+    max-height: 20vh;
+    margin-left: 1vmin;
 }
 
 .disabled {
@@ -487,7 +499,7 @@ body#setting {
 
 #user-setting > li {
     margin: 0;
-    padding: 0 1rem;
+    padding: 0 14px;
     line-height: 2.8rem;
     border-bottom: 1px solid #ccc;
     background: #fff;
@@ -565,8 +577,8 @@ li.checkbox label {
     position: absolute;
     width: auto;
     top: 0;
-    left: 1rem;
-    right: 1rem;
+    left: 14px;
+    right: 14px;
 }
 
 input[type="checkbox"] {
