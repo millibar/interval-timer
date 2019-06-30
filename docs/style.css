@@ -384,7 +384,7 @@ https://daneden.github.io/animate.css/
     margin: 0 auto;
     padding: 0;
     width: 100%;
-    max-width: 100vmax;
+    max-width: 90vmax;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -433,8 +433,8 @@ button.disabled {
     width: 35vmin;
     height: 35vmin;
     font-size: 6vmin;
-    max-width: 27vh;
-    max-height: 27vh;
+    max-width: 25vh;
+    max-height: 25vh;
     
 }
 
@@ -446,8 +446,8 @@ button.disabled {
     width: 25vmin;
     height: 25vmin;
     font-size: 4vmin;
-    max-width: 20vh;
-    max-height: 20vh;
+    max-width: 17.8vh;
+    max-height: 17.8vh;
     margin-right: 1vmin;
 }
 
@@ -459,8 +459,8 @@ button.disabled {
     width: 25vmin;
     height: 25vmin;
     font-size: 4vmin;
-    max-width: 20vh;
-    max-height: 20vh;
+    max-width: 17.8vh;
+    max-height: 17.8vh;
     margin-left: 1vmin;
 }
 
@@ -506,11 +506,14 @@ body#setting {
     clear:both;
 }
 
+#user-setting > li:nth-child(5) { /* Interval in Final Set */
+    border-top: 1px solid #ccc;
+}
+
 #user-setting li#setting-total {
     display: flex;
     justify-content: space-between;
     background: transparent;
-    border-bottom: none;
 }
 
 #user-setting li#setting-set {
@@ -536,14 +539,14 @@ body#setting {
 }
 
 #user-setting details.open div {
-    /* Chromeでopacityのtransitionが効かないので、Scriptでopenクラスを0.1s遅れで追加する */
+    /* Chromeでopacityのtransitionが効かないので、JavaScriptでopenクラスを0.1s遅れで追加する */
     opacity: 1;
 }
 
 #user-setting summary {
     list-style: none;
     height: 2.8rem;
-    /* Safariはsummaryにflexboxでレイアウトできないのでfloatでやる
+    /* Safariはsummaryにflexboxでレイアウトできないっぽいのでfloatでやる
     display: flex;
     justify-content: space-between;
     */
@@ -594,8 +597,8 @@ input[type="checkbox"] + label::before { /* トグルスイッチの背景部分
     border-radius: 0.8rem;
     position: absolute;
     top: 0;
-    left: auto;
     bottom: 0;
+    left: auto;
     right: 0;
     margin: auto;
     z-index: 1;
@@ -608,14 +611,14 @@ input[type="checkbox"] + label::before { /* トグルスイッチの背景部分
 input[type="checkbox"] + label::after {/* トグルスイッチの丸い部分 */
     content: "";
     display: block;
-    width: 1.6rem;
-    height: 1.6rem;
+    width: 1.5rem;
+    height: 1.5rem;
     border-radius: 50%;
     background: #fff;
     position: absolute;
     top: 0;
-    left: auto;
     bottom: 0;
+    left: auto;
     right: 0;
     margin: auto;
     z-index: 10;
@@ -623,7 +626,7 @@ input[type="checkbox"] + label::after {/* トグルスイッチの丸い部分 *
     transition-property: transform;
     transition-duration: 0.2s;
     transition-timing-function: ease-in-out;
-    transform: translateX(-1.2rem); /* 2.8 - 1.6 */
+    transform: translateX(-1.3rem); /* 2.8 - 1.5 */
 }
 
 input[type="checkbox"]:checked + label::before {
